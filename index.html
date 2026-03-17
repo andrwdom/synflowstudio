@@ -1,0 +1,1180 @@
+i<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Synflow | Crafted Digital Automation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://unpkg.com/lenis@1.1.20/dist/lenis.min.js"></script>
+
+    <!-- Premium Font Pairing: Playfair Display (Serif) & Inter (Sans) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&display=swap"
+        rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    },
+                    colors: {
+                        cream: {
+                            DEFAULT: '#F4F3EF', // Warm alabaster
+                            dark: '#E8E6E1'
+                        },
+                        ink: {
+                            DEFAULT: '#1C1917', // Deep warm charcoal
+                            light: '#44403C'
+                        },
+                        accent: {
+                            DEFAULT: '#C25E3E', // Muted terracotta
+                            hover: '#A64B2F'
+                        }
+                    },
+                    animation: {
+                        'fade-in-up': 'fadeInUp 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+                    },
+                    keyframes: {
+                        fadeInUp: {
+                            '0%': { opacity: '0', transform: 'translateY(30px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #F4F3EF;
+            color: #1C1917;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #F4F3EF;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #D6D3D1;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #A8A29E;
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Soft, premium hover states */
+        .bento-card {
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .bento-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px -10px rgba(28, 25, 23, 0.05);
+        }
+
+        /* Elegant Browser Preview Animations */
+        .preview-cursor {
+            transition: all 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        .click-ripple {
+            animation: ripple 0.6s ease-out forwards;
+        }
+
+        .log-item {
+            opacity: 0.3;
+            transform: translateY(15px);
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .log-item.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @keyframes ripple {
+            0% {
+                transform: scale(0);
+                opacity: 0.4;
+                background-color: #1C1917;
+            }
+
+            100% {
+                transform: scale(3);
+                opacity: 0;
+                background-color: #1C1917;
+            }
+        }
+
+        .eyebrow {
+            font-family: 'Inter', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        /* Force hide default cursor across the entire page */
+        html,
+        body,
+        *,
+        a,
+        button,
+        iframe {
+            cursor: none !important;
+        }
+    </style>
+</head>
+
+<body class="selection:bg-ink selection:text-cream cursor-none overflow-hidden" id="body-container">
+
+    <!-- Premium Preloader -->
+    <div id="preloader"
+        class="fixed inset-0 bg-ink z-[10000] flex flex-col justify-between p-8 md:p-12 text-cream transition-transform duration-[1200ms] ease-[cubic-bezier(0.76,0,0.24,1)]">
+        <div class="flex justify-between items-start font-sans text-xs md:text-sm uppercase tracking-widest opacity-60">
+            <div>
+                <span class="block">Synflow Studio</span>
+                <span class="block mt-1">System Initialization</span>
+            </div>
+            <div class="w-8 h-8 rounded-full border border-cream/20 flex items-center justify-center">
+                <i data-lucide="infinity" class="w-4 h-4 text-cream"></i>
+            </div>
+        </div>
+        <div class="flex items-end justify-between w-full">
+            <div class="w-1/3 md:w-1/4 h-px bg-white/20 mb-4 md:mb-6 relative overflow-hidden">
+                <div id="loader-progress"
+                    class="absolute inset-y-0 left-0 bg-white w-0 transition-all duration-75 ease-linear"></div>
+            </div>
+            <div class="font-sans text-[18vw] md:text-[12vw] font-light leading-none tracking-tighter"><span
+                    id="loader-counter">00</span><span class="text-[8vw] md:text-[5vw] opacity-50">%</span></div>
+        </div>
+    </div>
+
+    <!-- Custom Smooth Cursor -->
+    <div id="custom-cursor" class="fixed pointer-events-none z-[9999] hidden md:block"
+        style="left: 0; top: 0; transform: translate3d(0px, 0px, 0px); margin-left: -5px; margin-top: -6px;">
+        <div id="cursor-graphic" class="transition-transform duration-200" style="transform-origin: 5px 6px;">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="#000000" stroke="#FFFFFF" stroke-width="1.5"
+                stroke-linejoin="round" class="drop-shadow-sm pointer-events-none">
+                <path class="cursor-path transition-colors duration-200"
+                    d="M19.503 9.97c1.204.489 1.112 2.224-.137 2.583l-6.306 1.813l-2.88 5.895c-.57 1.168-2.295.957-2.568-.314L4.677 6.257A1.369 1.369 0 0 1 6.53 4.7l12.973 5.27Z"
+                    clip-rule="evenodd"></path>
+            </svg>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-40 top-0 border-b border-ink/5 bg-cream/80 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-6 md:px-8 h-20 flex items-center justify-between">
+            <a href="#" class="text-xl font-serif font-semibold tracking-tight flex items-center gap-3 text-ink">
+                <div class="w-8 h-8 rounded-full border border-ink/20 flex items-center justify-center">
+                    <i data-lucide="infinity" class="w-4 h-4 text-ink"></i>
+                </div>
+                Synflow
+            </a>
+            <div class="hidden md:flex gap-8 text-[12px] uppercase tracking-widest font-semibold text-ink-light">
+                <a href="#work" class="hover:text-ink transition-colors">Selected Works</a>
+                <a href="#services" class="hover:text-ink transition-colors">Expertise</a>
+                <a href="#workflow" class="hover:text-ink transition-colors">The Platform</a>
+                <a href="#about" class="hover:text-ink transition-colors">Studio</a>
+            </div>
+            <button
+                class="bg-ink text-cream px-6 py-2.5 rounded-full text-sm font-medium hover:bg-ink-light transition-colors duration-300">
+                Start a project
+            </button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="relative min-h-screen flex items-center justify-center pt-32 pb-20">
+        <!-- Subtle ambient background glow for depth -->
+        <div
+            class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-white/40 rounded-full blur-[100px] -z-10 pointer-events-none">
+        </div>
+
+        <div class="max-w-5xl mx-auto px-6 text-center z-10 relative w-full">
+
+            <!-- Enhanced Eyebrow -->
+            <div class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-ink/10 bg-white/60 shadow-sm backdrop-blur-sm text-ink mb-10 animate-fade-in-up eyebrow"
+                style="animation-delay: 0.1s;">
+                <i data-lucide="sparkles" class="w-3.5 h-3.5 text-accent"></i>
+                <span class="pt-px">Next-Generation Architecture</span>
+            </div>
+
+            <!-- Enhanced Heading -->
+            <h1 class="text-6xl md:text-8xl lg:text-[7rem] font-serif text-ink leading-[1.05] mb-8 animate-fade-in-up tracking-tight"
+                style="animation-delay: 0.2s;">
+                Digital excellence. <br>
+                <span class="italic text-ink-light font-light">Automated precision.</span>
+            </h1>
+
+            <!-- Enhanced Body -->
+            <p class="text-lg md:text-2xl text-ink-light mb-14 max-w-3xl mx-auto font-sans leading-relaxed animate-fade-in-up font-light"
+                style="animation-delay: 0.3s;">
+                We design high-performance web interfaces seamlessly integrated with autonomous AI workflows. Engineered
+                for ambitious brands ready to scale without friction.
+            </p>
+
+            <!-- Enhanced CTAs -->
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-5 animate-fade-in-up"
+                style="animation-delay: 0.4s;">
+                <button
+                    class="w-full sm:w-auto bg-ink text-cream px-8 py-4 rounded-full font-medium hover:bg-ink-light hover:shadow-lg transition-all duration-300 flex items-center justify-center gap-3 group">
+                    <span>Initiate a project</span>
+                    <div
+                        class="w-6 h-6 rounded-full bg-cream/20 flex items-center justify-center group-hover:translate-x-1 transition-transform">
+                        <i data-lucide="arrow-right" class="w-3.5 h-3.5 text-cream"></i>
+                    </div>
+                </button>
+                <button
+                    class="w-full sm:w-auto bg-white/50 border border-ink/10 text-ink px-8 py-4 rounded-full font-medium hover:bg-white hover:border-ink/30 hover:shadow-sm transition-all duration-300 flex items-center justify-center gap-3 group">
+                    <i data-lucide="compass" class="w-4 h-4 text-ink/50 group-hover:text-ink transition-colors"></i>
+                    <span>Explore capabilities</span>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Interactive Portfolio / Live Works Section -->
+    <section id="work" class="py-32 relative bg-white border-t border-ink/5">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="mb-20 reveal">
+                <div class="eyebrow text-accent mb-4">Selected Works</div>
+                <h2 class="text-4xl md:text-5xl font-serif tracking-tight text-ink mb-6">Digital spaces we've
+                    engineered.</h2>
+                <p class="text-ink-light max-w-2xl text-lg font-light leading-relaxed">Interact with live deployments of
+                    our recent architectures directly within this environment.</p>
+            </div>
+
+            <!-- Staggered Layout for Works -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 md:gap-16 items-start">
+
+                <!-- Left Column -->
+                <div class="flex flex-col gap-12 md:gap-24">
+                    <!-- Project 1: Rit Yatra -->
+                    <div class="reveal group flex flex-col gap-6">
+                        <div
+                            class="relative w-full rounded-2xl border border-ink/10 bg-cream-dark shadow-sm overflow-hidden transition-all duration-700 group-hover:shadow-[0_40px_80px_-20px_rgba(0,0,0,0.12)] group-hover:-translate-y-3 cursor-pointer">
+                            <!-- Browser Header -->
+                            <div class="h-10 bg-white border-b border-ink/5 flex items-center px-4 justify-between">
+                                <div class="flex gap-1.5 z-10">
+                                    <div
+                                        class="w-2.5 h-2.5 rounded-full bg-[#E5E5E5] border border-[#D4D4D4] group-hover:bg-red-400 transition-colors">
+                                    </div>
+                                    <div
+                                        class="w-2.5 h-2.5 rounded-full bg-[#E5E5E5] border border-[#D4D4D4] group-hover:bg-yellow-400 transition-colors">
+                                    </div>
+                                    <div
+                                        class="w-2.5 h-2.5 rounded-full bg-[#E5E5E5] border border-[#D4D4D4] group-hover:bg-green-400 transition-colors">
+                                    </div>
+                                </div>
+                                <div
+                                    class="absolute left-1/2 -translate-x-1/2 w-3/5 sm:w-2/3 max-w-[320px] h-8 bg-[#F4F3EF] rounded-md text-[10.5px] text-ink-light font-sans tracking-wide flex items-center justify-center gap-2.5 group-hover:bg-white transition-colors truncate">
+                                    <i data-lucide="lock" class="w-2.5 h-2.5 text-ink/40"></i>
+                                    rityatra.in
+                                </div>
+                                <a href="https://www.rityatra.in/" target="_blank" rel="noopener noreferrer"
+                                    class="text-ink/30 hover:text-ink transition-colors z-10">
+                                    <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+                                </a>
+                            </div>
+                            <!-- Iframe Container -->
+                            <div class="relative w-full h-[450px] md:h-[550px] bg-[#FAFAFA] overflow-hidden">
+                                <div
+                                    class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none z-0">
+                                    <i data-lucide="loader-2" class="w-5 h-5 animate-spin mb-2 text-ink/20"></i>
+                                </div>
+                                <iframe src="https://www.rityatra.in/"
+                                    class="relative z-10 w-full h-full border-0 bg-transparent pointer-events-none select-none transition-transform duration-1000 group-hover:scale-[1.02]"
+                                    loading="lazy" tabindex="-1"></iframe>
+                                <!-- Hover Overlay for subtle interaction -->
+                                <div
+                                    class="absolute inset-0 bg-ink/0 group-hover:bg-ink/[0.02] transition-colors duration-500 z-20 pointer-events-none">
+                                </div>
+                                <!-- Roaming Cursor -->
+                                <div
+                                    class="sim-cursor-work absolute top-0 left-0 z-50 pointer-events-none drop-shadow-md opacity-0 transition-opacity duration-700">
+                                    <svg width="22" height="22" viewBox="0 0 24 24" fill="#1C1917" stroke="white"
+                                        stroke-width="2">
+                                        <path d="M5.5 3 L5.5 20 L9.5 16 L13.5 23 L16.5 21.5 L12.5 14.5 L19 14.5 Z"
+                                            stroke-linejoin="round"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Meta info -->
+                        <div class="flex justify-between items-start px-2 mt-2">
+                            <div>
+                                <h3 class="font-serif text-3xl text-ink mb-2 group-hover:text-accent transition-colors">
+                                    Rit
+                                    Yatra</h3>
+                                <p class="text-sm text-ink-light font-light tracker-wide">Custom Travel & Booking
+                                    Architecture</p>
+                            </div>
+                            <span
+                                class="text-[10px] text-ink font-mono uppercase tracking-widest border border-ink/10 bg-cream px-3 py-1.5 rounded-full mt-1">Live</span>
+                        </div>
+                    </div>
+
+                    <!-- Project 3: Cake House -->
+                    <div class="reveal group flex flex-col gap-6">
+                        <div
+                            class="relative w-full rounded-2xl border border-ink/10 bg-cream-dark shadow-sm overflow-hidden transition-all duration-700 group-hover:shadow-[0_40px_80px_-20px_rgba(0,0,0,0.12)] group-hover:-translate-y-3 cursor-pointer">
+                            <!-- Browser Header -->
+                            <div class="h-10 bg-white border-b border-ink/5 flex items-center px-4 justify-between">
+                                <div class="flex gap-1.5 z-10">
+                                    <div
+                                        class="w-2.5 h-2.5 rounded-full bg-[#E5E5E5] border border-[#D4D4D4] group-hover:bg-red-400 transition-colors">
+                                    </div>
+                                    <div
+                                        class="w-2.5 h-2.5 rounded-full bg-[#E5E5E5] border border-[#D4D4D4] group-hover:bg-yellow-400 transition-colors">
+                                    </div>
+                                    <div
+                                        class="w-2.5 h-2.5 rounded-full bg-[#E5E5E5] border border-[#D4D4D4] group-hover:bg-green-400 transition-colors">
+                                    </div>
+                                </div>
+                                <div
+                                    class="absolute left-1/2 -translate-x-1/2 w-3/5 sm:w-2/3 max-w-[320px] h-8 bg-[#F4F3EF] rounded-md text-[10.5px] text-ink-light font-sans tracking-wide flex items-center justify-center gap-2.5 group-hover:bg-white transition-colors truncate">
+                                    <i data-lucide="lock" class="w-2.5 h-2.5 text-ink/40"></i>
+                                    cake-house-ten.vercel.app
+                                </div>
+                                <a href="https://cake-house-ten.vercel.app/" target="_blank" rel="noopener noreferrer"
+                                    class="text-ink/30 hover:text-ink transition-colors z-10">
+                                    <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+                                </a>
+                            </div>
+                            <!-- Iframe Container -->
+                            <div class="relative w-full h-[450px] md:h-[550px] bg-[#FAFAFA] overflow-hidden">
+                                <div
+                                    class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none z-0">
+                                    <i data-lucide="loader-2" class="w-5 h-5 animate-spin mb-2 text-ink/20"></i>
+                                </div>
+                                <iframe src="https://cake-house-ten.vercel.app/"
+                                    class="relative z-10 w-full h-full border-0 bg-transparent pointer-events-none select-none transition-transform duration-1000 group-hover:scale-[1.02]"
+                                    loading="lazy" tabindex="-1"></iframe>
+                                <!-- Hover Overlay for subtle interaction -->
+                                <div
+                                    class="absolute inset-0 bg-ink/0 group-hover:bg-ink/[0.02] transition-colors duration-500 z-20 pointer-events-none">
+                                </div>
+                                <!-- Roaming Cursor -->
+                                <div
+                                    class="sim-cursor-work absolute top-0 left-0 z-50 pointer-events-none drop-shadow-md opacity-0 transition-opacity duration-700">
+                                    <svg width="22" height="22" viewBox="0 0 24 24" fill="#1C1917" stroke="white"
+                                        stroke-width="2">
+                                        <path d="M5.5 3 L5.5 20 L9.5 16 L13.5 23 L16.5 21.5 L12.5 14.5 L19 14.5 Z"
+                                            stroke-linejoin="round"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Meta info -->
+                        <div class="flex justify-between items-start px-2 mt-2">
+                            <div>
+                                <h3 class="font-serif text-3xl text-ink mb-2 group-hover:text-accent transition-colors">
+                                    Cake
+                                    House</h3>
+                                <p class="text-sm text-ink-light font-light tracker-wide">E-commerce / Bakery Frontend
+                                </p>
+                            </div>
+                            <span
+                                class="text-[10px] text-ink font-mono uppercase tracking-widest border border-ink/10 bg-cream px-3 py-1.5 rounded-full mt-1">Live</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column (Staggered) -->
+                <div class="flex flex-col gap-12 md:gap-24 lg:mt-32">
+                    <!-- Project 2: RMCHRI -->
+                    <div class="reveal group flex flex-col gap-6">
+                        <div
+                            class="relative w-full rounded-2xl border border-ink/10 bg-cream-dark shadow-sm overflow-hidden transition-all duration-700 group-hover:shadow-[0_40px_80px_-20px_rgba(0,0,0,0.12)] group-hover:-translate-y-3 cursor-pointer">
+                            <!-- Browser Header -->
+                            <div class="h-10 bg-white border-b border-ink/5 flex items-center px-4 justify-between">
+                                <div class="flex gap-1.5 z-10">
+                                    <div
+                                        class="w-2.5 h-2.5 rounded-full bg-[#E5E5E5] border border-[#D4D4D4] group-hover:bg-red-400 transition-colors">
+                                    </div>
+                                    <div
+                                        class="w-2.5 h-2.5 rounded-full bg-[#E5E5E5] border border-[#D4D4D4] group-hover:bg-yellow-400 transition-colors">
+                                    </div>
+                                    <div
+                                        class="w-2.5 h-2.5 rounded-full bg-[#E5E5E5] border border-[#D4D4D4] group-hover:bg-green-400 transition-colors">
+                                    </div>
+                                </div>
+                                <div
+                                    class="absolute left-1/2 -translate-x-1/2 w-3/5 sm:w-2/3 max-w-[320px] h-8 bg-[#F4F3EF] rounded-md text-[10.5px] text-ink-light font-sans tracking-wide flex items-center justify-center gap-2.5 group-hover:bg-white transition-colors truncate">
+                                    <i data-lucide="lock" class="w-2.5 h-2.5 text-ink/40"></i>
+                                    rmchri.in
+                                </div>
+                                <a href="https://rmchri.in/" target="_blank" rel="noopener noreferrer"
+                                    class="text-ink/30 hover:text-ink transition-colors z-10">
+                                    <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+                                </a>
+                            </div>
+                            <!-- Iframe Container -->
+                            <div class="relative w-full h-[450px] md:h-[550px] bg-[#FAFAFA] overflow-hidden">
+                                <div
+                                    class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none z-0">
+                                    <i data-lucide="loader-2" class="w-5 h-5 animate-spin mb-2 text-ink/20"></i>
+                                </div>
+                                <iframe src="https://rmchri.in/"
+                                    class="relative z-10 w-full h-full border-0 bg-transparent pointer-events-none select-none transition-transform duration-1000 group-hover:scale-[1.02]"
+                                    loading="lazy" tabindex="-1"></iframe>
+                                <!-- Hover Overlay for subtle interaction -->
+                                <div
+                                    class="absolute inset-0 bg-ink/0 group-hover:bg-ink/[0.02] transition-colors duration-500 z-20 pointer-events-none">
+                                </div>
+                                <!-- Roaming Cursor -->
+                                <div
+                                    class="sim-cursor-work absolute top-0 left-0 z-50 pointer-events-none drop-shadow-md opacity-0 transition-opacity duration-700">
+                                    <svg width="22" height="22" viewBox="0 0 24 24" fill="#1C1917" stroke="white"
+                                        stroke-width="2">
+                                        <path d="M5.5 3 L5.5 20 L9.5 16 L13.5 23 L16.5 21.5 L12.5 14.5 L19 14.5 Z"
+                                            stroke-linejoin="round"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Meta info -->
+                        <div class="flex justify-between items-start px-2 mt-2">
+                            <div>
+                                <h3 class="font-serif text-3xl text-ink mb-2 group-hover:text-accent transition-colors">
+                                    RMCHRI</h3>
+                                <p class="text-sm text-ink-light font-light tracker-wide">Medical Institution Platform
+                                </p>
+                            </div>
+                            <span
+                                class="text-[10px] text-ink font-mono uppercase tracking-widest border border-ink/10 bg-cream px-3 py-1.5 rounded-full mt-1">Live</span>
+                        </div>
+                    </div>
+
+                    <!-- Project 4: Anto Merary -->
+                    <div class="reveal group flex flex-col gap-6">
+                        <div
+                            class="relative w-full rounded-2xl border border-ink/10 bg-cream-dark shadow-sm overflow-hidden transition-all duration-700 group-hover:shadow-[0_40px_80px_-20px_rgba(0,0,0,0.12)] group-hover:-translate-y-3 cursor-pointer">
+                            <!-- Browser Header -->
+                            <div class="h-10 bg-white border-b border-ink/5 flex items-center px-4 justify-between">
+                                <div class="flex gap-1.5 z-10">
+                                    <div
+                                        class="w-2.5 h-2.5 rounded-full bg-[#E5E5E5] border border-[#D4D4D4] group-hover:bg-red-400 transition-colors">
+                                    </div>
+                                    <div
+                                        class="w-2.5 h-2.5 rounded-full bg-[#E5E5E5] border border-[#D4D4D4] group-hover:bg-yellow-400 transition-colors">
+                                    </div>
+                                    <div
+                                        class="w-2.5 h-2.5 rounded-full bg-[#E5E5E5] border border-[#D4D4D4] group-hover:bg-green-400 transition-colors">
+                                    </div>
+                                </div>
+                                <div
+                                    class="absolute left-1/2 -translate-x-1/2 w-3/5 sm:w-2/3 max-w-[320px] h-8 bg-[#F4F3EF] rounded-md text-[10.5px] text-ink-light font-sans tracking-wide flex items-center justify-center gap-2.5 group-hover:bg-white transition-colors truncate">
+                                    <i data-lucide="lock" class="w-2.5 h-2.5 text-ink/40"></i>
+                                    anto-merary.vercel.app
+                                </div>
+                                <a href="https://anto-merary-s-portfolio.vercel.app/" target="_blank"
+                                    rel="noopener noreferrer" class="text-ink/30 hover:text-ink transition-colors z-10">
+                                    <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+                                </a>
+                            </div>
+                            <!-- Iframe Container -->
+                            <div class="relative w-full h-[450px] md:h-[550px] bg-[#FAFAFA] overflow-hidden">
+                                <div
+                                    class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none z-0">
+                                    <i data-lucide="loader-2" class="w-5 h-5 animate-spin mb-2 text-ink/20"></i>
+                                </div>
+                                <iframe src="https://anto-merary-s-portfolio.vercel.app/"
+                                    class="relative z-10 w-full h-full border-0 bg-transparent pointer-events-none select-none transition-transform duration-1000 group-hover:scale-[1.02]"
+                                    loading="lazy" tabindex="-1"></iframe>
+                                <!-- Hover Overlay for subtle interaction -->
+                                <div
+                                    class="absolute inset-0 bg-ink/0 group-hover:bg-ink/[0.02] transition-colors duration-500 z-20 pointer-events-none">
+                                </div>
+                                <!-- Roaming Cursor -->
+                                <div
+                                    class="sim-cursor-work absolute top-0 left-0 z-50 pointer-events-none drop-shadow-md opacity-0 transition-opacity duration-700">
+                                    <svg width="22" height="22" viewBox="0 0 24 24" fill="#1C1917" stroke="white"
+                                        stroke-width="2">
+                                        <path d="M5.5 3 L5.5 20 L9.5 16 L13.5 23 L16.5 21.5 L12.5 14.5 L19 14.5 Z"
+                                            stroke-linejoin="round"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Meta info -->
+                        <div class="flex justify-between items-start px-2 mt-2">
+                            <div>
+                                <h3 class="font-serif text-3xl text-ink mb-2 group-hover:text-accent transition-colors">
+                                    Anto
+                                    Merary</h3>
+                                <p class="text-sm text-ink-light font-light tracker-wide">Creative Personal Portfolio
+                                </p>
+                            </div>
+                            <span
+                                class="text-[10px] text-ink font-mono uppercase tracking-widest border border-ink/10 bg-cream px-3 py-1.5 rounded-full mt-1">Live</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- The Interactive "Browsing Preview / Tutorial" Section -->
+    <section id="workflow" class="py-32 relative bg-cream border-t border-ink/5">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-20 reveal">
+                <div class="eyebrow text-accent mb-4">The Platform</div>
+                <h2 class="text-4xl md:text-5xl font-serif tracking-tight text-ink mb-6">Intelligence by design.</h2>
+                <p class="text-ink-light max-w-2xl mx-auto text-lg font-light leading-relaxed">Observe how a beautifully
+                    crafted frontend seamlessly triggers complex backend orchestration without a single line of visible
+                    code.</p>
+            </div>
+
+            <!-- Browser Mockup Container -->
+            <div
+                class="relative w-full max-w-5xl mx-auto rounded-2xl border border-ink/10 bg-cream-dark shadow-[0_20px_60px_-15px_rgba(0,0,0,0.05)] overflow-hidden reveal">
+                <!-- macOS-style Window Controls -->
+                <div class="h-12 bg-white border-b border-ink/5 flex items-center px-5 gap-2 relative">
+                    <div class="flex gap-2 z-10">
+                        <div class="w-3 h-3 rounded-full bg-[#E5E5E5] border border-[#D4D4D4]"></div>
+                        <div class="w-3 h-3 rounded-full bg-[#E5E5E5] border border-[#D4D4D4]"></div>
+                        <div class="w-3 h-3 rounded-full bg-[#E5E5E5] border border-[#D4D4D4]"></div>
+                    </div>
+                    <!-- Address Bar -->
+                    <div
+                        class="absolute left-1/2 -translate-x-1/2 w-64 md:w-96 h-7 bg-cream rounded-md flex items-center justify-center text-[11px] text-ink-light font-sans tracking-wide">
+                        <i data-lucide="lock" class="w-3 h-3 mr-2 opacity-50"></i> workspace.synflow.studio
+                    </div>
+                </div>
+
+                <!-- Preview Content Area -->
+                <div class="relative h-[500px] md:h-[650px] bg-[#FAFAFA] overflow-hidden" id="preview-container">
+
+                    <!-- Simulated Cursor -->
+                    <div id="sim-cursor"
+                        class="absolute top-[80%] left-[80%] z-50 preview-cursor pointer-events-none flex items-center justify-center">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="#1C1917" stroke="white" stroke-width="2"
+                            class="drop-shadow-md">
+                            <path d="M3 3l7.07 16.97 2.51-7.39 7.39-2.51L3 3z"></path>
+                        </svg>
+                        <div id="cursor-ripple" class="absolute w-12 h-12 rounded-full scale-0 pointer-events-none">
+                        </div>
+                    </div>
+
+                    <!-- State 1: The Modern Website Wireframe -->
+                    <div id="state-1"
+                        class="absolute inset-0 p-8 md:p-16 transition-all duration-[1200ms] ease-[cubic-bezier(0.16,1,0.3,1)]"
+                        style="transform-origin: center top;">
+                        <div
+                            class="w-full h-full flex flex-col gap-10 max-w-4xl mx-auto bg-white rounded-2xl border border-ink/5 p-10 shadow-sm">
+                            <div class="flex justify-between items-center pb-6 border-b border-ink/5">
+                                <div class="w-24 h-5 bg-cream-dark rounded"></div>
+                                <div class="flex gap-6">
+                                    <div class="w-12 h-2 bg-cream-dark rounded-full"></div>
+                                    <div class="w-12 h-2 bg-cream-dark rounded-full"></div>
+                                </div>
+                            </div>
+                            <div class="flex-1 flex flex-col md:flex-row gap-16 items-center">
+                                <div class="flex-1 space-y-6 w-full">
+                                    <div class="space-y-3">
+                                        <div class="w-full h-10 bg-ink/5 rounded"></div>
+                                        <div class="w-4/5 h-10 bg-ink/5 rounded"></div>
+                                    </div>
+                                    <div class="space-y-2 pt-2">
+                                        <div class="w-full h-2 bg-ink/5 rounded-full"></div>
+                                        <div class="w-5/6 h-2 bg-ink/5 rounded-full"></div>
+                                        <div class="w-4/6 h-2 bg-ink/5 rounded-full"></div>
+                                    </div>
+                                    <div class="pt-6">
+                                        <!-- The button the cursor will click -->
+                                        <div id="target-btn-1"
+                                            class="w-40 h-12 bg-ink rounded-full flex items-center justify-center relative overflow-hidden transition-colors">
+                                            <div class="w-20 h-2 bg-white/50 rounded-full"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div
+                                    class="flex-1 w-full h-64 md:h-full bg-cream rounded-xl border border-ink/5 flex items-center justify-center relative">
+                                    <div
+                                        class="w-32 h-32 rounded-full border border-ink/10 flex items-center justify-center">
+                                        <div class="w-16 h-16 rounded-full bg-ink/5"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- State 2: AI Processing (Elegant Timeline) -->
+                    <div id="state-2"
+                        class="absolute inset-0 p-8 md:p-16 bg-[#FAFAFA] transition-all duration-[1200ms] ease-[cubic-bezier(0.16,1,0.3,1)] opacity-0 translate-y-8 pointer-events-none flex items-center justify-center"
+                        style="transform-origin: center bottom;">
+                        <div class="w-full max-w-2xl bg-white border border-ink/5 rounded-2xl p-10 shadow-sm">
+                            <div class="mb-8 pb-6 border-b border-ink/5 flex items-center justify-between">
+                                <div>
+                                    <h4 class="font-serif text-xl text-ink">Workflow Orchestration</h4>
+                                    <p class="text-xs text-ink-light font-sans mt-1">Processing incoming request...</p>
+                                </div>
+                                <div class="w-8 h-8 rounded-full bg-cream flex items-center justify-center">
+                                    <i data-lucide="loader-2" class="w-4 h-4 text-ink-light animate-spin"></i>
+                                </div>
+                            </div>
+
+                            <div class="space-y-8 relative">
+                                <!-- Connecting line -->
+                                <div class="absolute left-[15px] top-[10px] bottom-[10px] w-px bg-ink/5"></div>
+
+                                <div class="flex items-start gap-6 relative log-item" id="log-1">
+                                    <div
+                                        class="w-8 h-8 rounded-full bg-white flex items-center justify-center shrink-0 z-10 border border-ink/10">
+                                        <div
+                                            class="w-2 h-2 rounded-full bg-ink/20 log-dot transition-colors duration-500">
+                                        </div>
+                                    </div>
+                                    <div class="pt-1 w-full">
+                                        <span class="text-ink font-medium text-sm">Form Data Received</span>
+                                        <p
+                                            class="text-ink-light text-xs mt-1.5 leading-relaxed bg-cream p-3 rounded-lg border border-ink/5">
+                                            Parsing client requirements: Industry <span
+                                                class="font-medium text-ink">SaaS</span>, Budget <span
+                                                class="font-medium text-ink">$15k+</span>
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div class="flex items-start gap-6 relative log-item" id="log-2">
+                                    <div
+                                        class="w-8 h-8 rounded-full bg-white flex items-center justify-center shrink-0 z-10 border border-ink/10">
+                                        <div
+                                            class="w-2 h-2 rounded-full bg-ink/20 log-dot transition-colors duration-500">
+                                        </div>
+                                    </div>
+                                    <div class="pt-1 w-full">
+                                        <span class="text-ink font-medium text-sm">Synthesizing Proposal</span>
+                                        <p
+                                            class="text-ink-light text-xs mt-1.5 leading-relaxed bg-cream p-3 rounded-lg border border-ink/5">
+                                            LLM drafting bespoke introduction and preliminary scope based on historical
+                                            case studies.
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div class="flex items-start gap-6 relative log-item" id="log-3">
+                                    <div
+                                        class="w-8 h-8 rounded-full bg-white flex items-center justify-center shrink-0 z-10 border border-ink/10">
+                                        <div
+                                            class="w-2 h-2 rounded-full bg-ink/20 log-dot transition-colors duration-500">
+                                        </div>
+                                    </div>
+                                    <div class="pt-1 w-full">
+                                        <span class="text-ink font-medium text-sm">Systems Updated</span>
+                                        <p class="text-ink-light text-xs mt-1.5 leading-relaxed">
+                                            CRM pipeline updated to <span
+                                                class="bg-cream px-2 py-1 rounded text-ink border border-ink/5">Qualified</span>.
+                                            Notification sent to Slack.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- State 3: Analytics / Result -->
+                    <div id="state-3"
+                        class="absolute inset-0 p-8 md:p-16 bg-[#FAFAFA] transition-all duration-[1200ms] ease-[cubic-bezier(0.16,1,0.3,1)] opacity-0 translate-y-8 pointer-events-none"
+                        style="transform-origin: center bottom;">
+                        <div class="w-full h-full flex flex-col max-w-4xl mx-auto">
+                            <div class="mb-10 flex justify-between items-end pb-6 border-b border-ink/5">
+                                <div>
+                                    <h3 class="text-3xl font-serif text-ink mb-1">Performance Overview</h3>
+                                    <p class="text-ink-light font-sans text-sm">Automated systems telemetry.</p>
+                                </div>
+                                <div
+                                    class="flex items-center gap-2 text-xs font-medium text-ink/50 bg-white px-3 py-1.5 rounded-full border border-ink/5">
+                                    <div class="w-1.5 h-1.5 rounded-full bg-green-500"></div>
+                                    Operational
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                                <div class="bg-white border border-ink/5 p-6 rounded-2xl shadow-sm">
+                                    <div class="eyebrow text-ink-light mb-4">Hours Recovered</div>
+                                    <div class="text-4xl font-serif text-ink">124<span
+                                            class="text-ink-light font-sans text-lg font-normal">/mo</span></div>
+                                </div>
+                                <div class="bg-white border border-ink/5 p-6 rounded-2xl shadow-sm">
+                                    <div class="eyebrow text-ink-light mb-4">Leads Qualified</div>
+                                    <div class="text-4xl font-serif text-ink">8,402</div>
+                                </div>
+                                <div class="bg-white border border-ink/5 p-6 rounded-2xl shadow-sm">
+                                    <div class="eyebrow text-ink-light mb-4">Avg. Latency</div>
+                                    <div class="text-4xl font-serif text-accent">1.2s</div>
+                                </div>
+                            </div>
+
+                            <!-- Elegant Chart Mockup -->
+                            <div
+                                class="flex-1 bg-white border border-ink/5 rounded-2xl p-8 flex items-end justify-between gap-3 shadow-sm relative group">
+                                <div
+                                    class="w-full bg-cream transition-all h-[20%] rounded-t-sm group-hover:bg-cream-dark">
+                                </div>
+                                <div
+                                    class="w-full bg-cream transition-all h-[35%] rounded-t-sm group-hover:bg-cream-dark">
+                                </div>
+                                <div
+                                    class="w-full bg-cream transition-all h-[25%] rounded-t-sm group-hover:bg-cream-dark">
+                                </div>
+                                <div class="w-full bg-cream-dark transition-all h-[50%] rounded-t-sm"></div>
+                                <div class="w-full bg-ink transition-all h-[70%] rounded-t-sm relative">
+                                    <div
+                                        class="absolute -top-10 left-1/2 -translate-x-1/2 bg-white border border-ink/5 shadow-sm text-ink text-[10px] py-1.5 px-3 rounded-full font-medium whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity">
+                                        Optimization deployed</div>
+                                </div>
+                                <div class="w-full bg-ink/80 transition-all h-[85%] rounded-t-sm"></div>
+                                <div class="w-full bg-ink/60 transition-all h-[95%] rounded-t-sm"></div>
+                            </div>
+
+                            <!-- Restart button -->
+                            <div class="absolute bottom-8 right-8 z-20">
+                                <button id="target-btn-2"
+                                    class="w-12 h-12 bg-white border border-ink/10 shadow-sm hover:border-ink/20 hover:shadow-md rounded-full flex items-center justify-center text-ink transition-all">
+                                    <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services / Expertise Section -->
+    <section id="services" class="py-32 relative bg-white border-t border-ink/5">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="mb-20 reveal">
+                <div class="eyebrow text-accent mb-4">Expertise</div>
+                <h2 class="text-4xl md:text-6xl font-serif tracking-tight text-ink mb-6">Capabilities.</h2>
+                <div class="w-20 h-px bg-ink/20"></div>
+            </div>
+
+            <!-- Soft Bento Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+                <!-- Main Service: Web Design -->
+                <div class="bento-card md:col-span-2 bg-white border border-ink/5 rounded-[2rem] p-12 reveal">
+                    <div
+                        class="w-12 h-12 rounded-full bg-cream flex items-center justify-center mb-8 border border-ink/5">
+                        <i data-lucide="pen-tool" class="w-5 h-5 text-ink"></i>
+                    </div>
+                    <h3 class="text-2xl font-serif mb-4 text-ink">Immersive Architecture</h3>
+                    <p class="text-ink-light leading-relaxed font-light max-w-xl">
+                        We eschew templates in favor of bespoke, ground-up development. Every pixel is intentional.
+                        Every interaction is designed to evoke trust, authority, and seamless usability.
+                    </p>
+                </div>
+
+                <!-- Service 2: AI Agents -->
+                <div class="bento-card bg-white border border-ink/5 rounded-[2rem] p-12 reveal"
+                    style="transition-delay: 100ms;">
+                    <div
+                        class="w-12 h-12 rounded-full bg-cream flex items-center justify-center mb-8 border border-ink/5">
+                        <i data-lucide="cpu" class="w-5 h-5 text-ink"></i>
+                    </div>
+                    <h3 class="text-xl font-serif mb-4 text-ink">Autonomous Agents</h3>
+                    <p class="text-ink-light font-light leading-relaxed text-sm">
+                        Tailored LLM integrations that handle customer inquiries and internal logic securely and without
+                        human intervention.
+                    </p>
+                </div>
+
+                <!-- Service 3: Workflows -->
+                <div class="bento-card bg-white border border-ink/5 rounded-[2rem] p-12 reveal">
+                    <div
+                        class="w-12 h-12 rounded-full bg-cream flex items-center justify-center mb-8 border border-ink/5">
+                        <i data-lucide="git-merge" class="w-5 h-5 text-ink"></i>
+                    </div>
+                    <h3 class="text-xl font-serif mb-4 text-ink">API Ecosystems</h3>
+                    <p class="text-ink-light font-light leading-relaxed text-sm">
+                        Unifying fragmented toolsets. We weave your CRM, communication channels, and databases into one
+                        cohesive organism.
+                    </p>
+                </div>
+
+                <!-- Service 4: Performance -->
+                <div class="bento-card md:col-span-2 bg-white border border-ink/5 rounded-[2rem] p-12 reveal flex flex-col md:flex-row gap-10 items-center"
+                    style="transition-delay: 100ms;">
+                    <div class="flex-1">
+                        <div
+                            class="w-12 h-12 rounded-full bg-cream flex items-center justify-center mb-8 border border-ink/5">
+                            <i data-lucide="zap" class="w-5 h-5 text-ink"></i>
+                        </div>
+                        <h3 class="text-2xl font-serif mb-4 text-ink">Ruthless Optimization</h3>
+                        <p class="text-ink-light font-light leading-relaxed max-w-md">
+                            Speed is a design feature. We engineer for sub-second load times and flawless technical SEO,
+                            ensuring your digital presence is as performant as it is beautiful.
+                        </p>
+                    </div>
+                    <div
+                        class="w-full md:w-48 h-48 bg-cream rounded-full border border-ink/5 flex items-center justify-center flex-col relative shrink-0">
+                        <div class="text-4xl font-serif text-ink">100</div>
+                        <div class="eyebrow text-ink/40 mt-2">Score</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer CTA (Dark inverse section) -->
+    <section class="py-40 relative bg-ink text-cream selection:bg-cream selection:text-ink overflow-hidden">
+        <!-- Subtle background pattern -->
+        <div class="absolute inset-0 opacity-[0.02]"
+            style="background-image: radial-gradient(circle at 2px 2px, white 1px, transparent 0); background-size: 32px 32px;">
+        </div>
+
+        <div class="max-w-4xl mx-auto px-6 text-center relative z-10 reveal">
+            <h2 class="text-5xl md:text-7xl font-serif tracking-tight mb-8 text-white">Scale gracefully.</h2>
+            <p class="text-cream/70 text-lg md:text-xl mb-12 max-w-2xl mx-auto font-light leading-relaxed">
+                Let us build a digital presence that reflects your brand's true value, while automating the operational
+                friction behind the scenes.
+            </p>
+            <button
+                class="bg-white text-ink px-10 py-5 rounded-full font-medium text-lg hover:bg-cream-dark transition-colors inline-flex items-center gap-3 group">
+                Start your project
+                <i data-lucide="arrow-right" class="w-5 h-5 group-hover:translate-x-1 transition-transform"></i>
+            </button>
+        </div>
+    </section>
+
+    <footer class="bg-ink py-16 border-t border-white/5 text-cream">
+        <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-8">
+            <div class="flex items-center gap-3 font-serif text-xl tracking-tight text-white">
+                <div class="w-8 h-8 rounded-full border border-white/20 flex items-center justify-center">
+                    <i data-lucide="infinity" class="w-4 h-4 text-white"></i>
+                </div>
+                Synflow
+            </div>
+            <div class="text-cream/50 text-sm font-light">
+                &copy; 2026 Synflow Studio. All rights reserved.
+            </div>
+            <div class="flex gap-8">
+                <a href="#" class="text-cream/50 hover:text-white transition-colors"><span
+                        class="eyebrow">Twitter</span></a>
+                <a href="#" class="text-cream/50 hover:text-white transition-colors"><span
+                        class="eyebrow">LinkedIn</span></a>
+                <a href="#" class="text-cream/50 hover:text-white transition-colors"><span
+                        class="eyebrow">Dribbble</span></a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts for Animations & Interactions -->
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
+        // --- Lenis Smooth Scroll ---
+        const lenis = new Lenis({
+            autoRaf: true,
+            smoothWheel: true,
+            syncTouch: true,
+            lerp: 0.08,
+        });
+
+        // Initially halt smooth scroll while loading
+        lenis.stop();
+        // --- Preloader Logic ---
+        document.addEventListener("DOMContentLoaded", () => {
+            const counter = document.getElementById('loader-counter');
+            const progress = document.getElementById('loader-progress');
+            const preloader = document.getElementById('preloader');
+            const bodyContainer = document.getElementById('body-container');
+
+            // Initialize icons early so preloader looks sharp
+            lucide.createIcons();
+
+            let count = 0;
+            const duration = 1800; // ms
+            const intervalTime = 30; // ms
+            const totalSteps = duration / intervalTime;
+            let currentStep = 0;
+
+            const interval = setInterval(() => {
+                currentStep++;
+                // Slight ease out
+                const x = currentStep / totalSteps;
+                const eased = 1 - Math.pow(1 - x, 3);
+                count = Math.floor(eased * 100);
+
+                if (count > 100) count = 100;
+
+                counter.innerText = count.toString().padStart(2, '0');
+                progress.style.width = count + '%';
+
+                if (currentStep >= totalSteps) {
+                    clearInterval(interval);
+                    counter.innerText = '100';
+                    progress.style.width = '100%';
+
+                    setTimeout(() => {
+                        preloader.classList.add('-translate-y-full');
+                        bodyContainer.classList.remove('overflow-hidden');
+
+                        // Restart scrolling and notify Lenis of size changes
+                        lenis.resize();
+                        lenis.start();
+
+                        setTimeout(() => {
+                            preloader.style.display = 'none';
+                        }, 1200); // 1200ms matches css duration
+                    }, 400); // hang at 100 for 400ms
+                }
+            }, intervalTime);
+        });
+
+        // --- Scroll Reveal Logic ---
+        const revealElements = document.querySelectorAll('.reveal');
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        revealElements.forEach(el => revealObserver.observe(el));
+
+        // --- Interactive Browser Terminal Logic ---
+        const cursor = document.getElementById('sim-cursor');
+        const ripple = document.getElementById('cursor-ripple');
+
+        const state1 = document.getElementById('state-1');
+        const state2 = document.getElementById('state-2');
+        const state3 = document.getElementById('state-3');
+
+        const targetBtn1 = document.getElementById('target-btn-1');
+        const targetBtn2 = document.getElementById('target-btn-2');
+
+        const log1 = document.getElementById('log-1');
+        const log2 = document.getElementById('log-2');
+        const log3 = document.getElementById('log-3');
+        const logDots = document.querySelectorAll('.log-dot');
+
+        let isAnimating = false;
+
+        function getCenterCoords(element) {
+            if (!element) return { x: 0, y: 0 };
+            const rect = element.getBoundingClientRect();
+            const container = document.getElementById('preview-container');
+            if (!container) return { x: 0, y: 0 };
+            const containerRect = container.getBoundingClientRect();
+            return {
+                x: (rect.left - containerRect.left) + (rect.width / 2),
+                y: (rect.top - containerRect.top) + (rect.height / 2)
+            };
+        }
+
+        function moveCursorTo(x, y) {
+            if (!cursor) return;
+            cursor.style.transform = `translate(${x}px, ${y}px)`;
+        }
+
+        function simulateClick() {
+            if (!ripple) return;
+            ripple.classList.remove('click-ripple');
+            void ripple.offsetWidth;
+            ripple.classList.add('click-ripple');
+        }
+
+        async function runSequence() {
+            if (isAnimating) return;
+            isAnimating = true;
+
+            // Reset to State 1
+            if (state1) { state1.style.opacity = '1'; state1.style.transform = 'translateY(0) scale(1)'; state1.style.pointerEvents = 'auto'; }
+            if (state2) { state2.style.opacity = '0'; state2.style.transform = 'translateY(20px) scale(1.02)'; state2.style.pointerEvents = 'none'; }
+            if (state3) { state3.style.opacity = '0'; state3.style.transform = 'translateY(20px) scale(1.02)'; state3.style.pointerEvents = 'none'; }
+
+            // Reset logs
+            if (log1) log1.classList.remove('active');
+            if (log2) log2.classList.remove('active');
+            if (log3) log3.classList.remove('active');
+            logDots.forEach(dot => dot.classList.replace('bg-[#3A5A40]', 'bg-ink/20'));
+
+            moveCursorTo(400, 300);
+            await new Promise(r => setTimeout(r, 1000));
+
+            // Move to Button 1 & Click
+            if (targetBtn1) {
+                const btn1Coords = getCenterCoords(targetBtn1);
+                moveCursorTo(btn1Coords.x, btn1Coords.y);
+
+                await new Promise(r => setTimeout(r, 800));
+                simulateClick();
+                targetBtn1.classList.add('bg-ink-light');
+                setTimeout(() => targetBtn1.classList.remove('bg-ink-light'), 150);
+            }
+
+            await new Promise(r => setTimeout(r, 400));
+
+            // Transition to State 2 (AI Working)
+            if (state1) { state1.style.opacity = '0'; state1.style.transform = 'translateY(-20px) scale(0.98)'; state1.style.pointerEvents = 'none'; }
+            if (state2) { state2.style.opacity = '1'; state2.style.transform = 'translateY(0) scale(1)'; }
+
+            moveCursorTo(500, 400);
+
+            // Simulate AI nodes activating (Sophisticated Forest Green for success)
+            await new Promise(r => setTimeout(r, 600));
+            if (log1) log1.classList.add('active');
+            if (logDots[0]) logDots[0].classList.replace('bg-ink/20', 'bg-[#3A5A40]');
+
+            await new Promise(r => setTimeout(r, 800));
+            if (log2) log2.classList.add('active');
+            if (logDots[1]) logDots[1].classList.replace('bg-ink/20', 'bg-[#3A5A40]');
+
+            await new Promise(r => setTimeout(r, 1000));
+            if (log3) log3.classList.add('active');
+            if (logDots[2]) logDots[2].classList.replace('bg-ink/20', 'bg-[#3A5A40]');
+
+            await new Promise(r => setTimeout(r, 1200));
+
+            // Transition to State 3 (Dashboard)
+            if (state2) { state2.style.opacity = '0'; state2.style.transform = 'translateY(-20px) scale(0.98)'; }
+            if (state3) { state3.style.opacity = '1'; state3.style.transform = 'translateY(0) scale(1)'; state3.style.pointerEvents = 'auto'; }
+
+            await new Promise(r => setTimeout(r, 1500));
+
+            // Move to Restart Button & Click
+            if (targetBtn2) {
+                const btn2Coords = getCenterCoords(targetBtn2);
+                moveCursorTo(btn2Coords.x, btn2Coords.y);
+
+                await new Promise(r => setTimeout(r, 800));
+                simulateClick();
+            }
+
+            await new Promise(r => setTimeout(r, 400));
+
+            isAnimating = false;
+            runSequence();
+        }
+
+        const previewContainer = document.getElementById('preview-container');
+        if (previewContainer) {
+            const previewObserver = new IntersectionObserver((entries) => {
+                if (entries[0].isIntersecting && !isAnimating) {
+                    setTimeout(runSequence, 500);
+                }
+            }, { threshold: 0.5 });
+
+            previewObserver.observe(previewContainer);
+        }
+
+        // --- Live Works Roaming Cursors ---
+        const workCursors = document.querySelectorAll('.sim-cursor-work');
+
+        workCursors.forEach(cursor => {
+            const container = cursor.parentElement;
+            if (!container) return;
+
+            // Set initial starting position safely within bounds
+            const startX = Math.random() * (container.clientWidth * 0.6) + (container.clientWidth * 0.2);
+            const startY = Math.random() * (container.clientHeight * 0.6) + (container.clientHeight * 0.2);
+            cursor.style.transform = `translate(${startX}px, ${startY}px)`;
+
+            // Fade cursor in after setup
+            setTimeout(() => cursor.classList.remove('opacity-0'), 500);
+
+            function roam() {
+                // Calculate new position within 15% to 85% of the container to keep it fully visible
+                const x = Math.random() * (container.clientWidth * 0.7) + (container.clientWidth * 0.15);
+                const y = Math.random() * (container.clientHeight * 0.7) + (container.clientHeight * 0.15);
+
+                // Random natural duration between 2s and 4.5s
+                const duration = Math.random() * 2500 + 2000;
+
+                cursor.style.transition = `transform ${duration}ms cubic-bezier(0.25, 1, 0.5, 1)`;
+                cursor.style.transform = `translate(${x}px, ${y}px)`;
+
+                // Trigger next movement
+                setTimeout(roam, duration);
+            }
+
+            // Start roaming loop with slight random offset to desync cursors
+            setTimeout(roam, Math.random() * 1000 + 500);
+        });
+
+        // --- Custom Smooth Cursor ---
+        const customCursor = document.getElementById('custom-cursor');
+        const graphic = document.getElementById('cursor-graphic');
+        let mouseX = window.innerWidth / 2;
+        let mouseY = window.innerHeight / 2;
+        let cursorX = mouseX;
+        let cursorY = mouseY;
+        let cursorScale = 1;
+        let cursorRotate = 0;
+
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+
+            // Hover effect on interactables
+            const cursorPath = customCursor ? customCursor.querySelector('.cursor-path') : null;
+            if (e.target.closest('a') || e.target.closest('button') || e.target.closest('.group') || e.target.closest('.cursor-pointer')) {
+                cursorScale = 1.15;
+                cursorRotate = -3;
+                if (cursorPath) cursorPath.setAttribute('fill', '#C25E3E');
+            } else {
+                cursorScale = 1;
+                cursorRotate = 0;
+                if (cursorPath) cursorPath.setAttribute('fill', '#000000');
+            }
+        });
+
+        function animateCursor() {
+            // Apply easing to coordinates
+            cursorX += (mouseX - cursorX) * 0.4;
+            cursorY += (mouseY - cursorY) * 0.4;
+
+            if (customCursor) {
+                // Apply layout translation to outer shell via translate3d for GPU acceleration (avoids transition conflicts)
+                customCursor.style.transform = `translate3d(${cursorX}px, ${cursorY}px, 0)`;
+                // Apply scale and rotate to inner graphic via CSS transition classes
+                if (graphic) graphic.style.transform = `scale(${cursorScale}) rotate(${cursorRotate}deg)`;
+            }
+            requestAnimationFrame(animateCursor);
+        }
+        animateCursor();
+
+        // Ensure cursors hide when leaving window
+        document.addEventListener('mouseleave', () => { if (customCursor) customCursor.style.opacity = '0'; });
+        document.addEventListener('mouseenter', () => { if (customCursor) customCursor.style.opacity = '1'; });
+
+    </script>
+</body>
+
+</html>
