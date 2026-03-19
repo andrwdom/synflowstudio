@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,937 +7,1000 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://unpkg.com/lenis@1.1.20/dist/lenis.min.js"></script>
-
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&display=swap"
-        rel="stylesheet">
-
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&display=swap" rel="stylesheet">
     <script>
         tailwind.config = {
             theme: {
                 extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                        serif: ['Playfair Display', 'serif'],
-                    },
+                    fontFamily: { sans:['Inter','sans-serif'], serif:['Playfair Display','serif'] },
                     colors: {
-                        cream: {
-                            DEFAULT: '#F4F3EF',
-                            dark: '#E8E6E1'
-                        },
-                        ink: {
-                            DEFAULT: '#1C1917',
-                            light: '#44403C'
-                        },
-                        accent: {
-                            DEFAULT: '#C25E3E',
-                            hover: '#A64B2F'
-                        }
+                        cream:  { DEFAULT:'#F4F3EF', dark:'#E8E6E1' },
+                        ink:    { DEFAULT:'#1C1917', light:'#44403C' },
+                        accent: { DEFAULT:'#C25E3E', hover:'#A64B2F' }
                     },
-                    animation: {
-                        'fade-in-up': 'fadeInUp 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards',
-                    },
-                    keyframes: {
-                        fadeInUp: {
-                            '0%': { opacity: '0', transform: 'translateY(30px)' },
-                            '100%': { opacity: '1', transform: 'translateY(0)' },
-                        }
-                    }
+                    animation: { 'fade-in-up': 'fadeInUp 1.2s cubic-bezier(0.16,1,0.3,1) forwards' },
+                    keyframes:  { fadeInUp: { '0%':{ opacity:'0', transform:'translateY(30px)' }, '100%':{ opacity:'1', transform:'translateY(0)' } } }
                 }
             }
         }
     </script>
     <style>
-        body {
-            background-color: #F4F3EF;
-            color: #1C1917;
-            overflow-x: hidden;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
+        *, *::before, *::after { box-sizing: border-box; }
+        body { background:#F4F3EF; color:#1C1917; overflow-x:hidden; -webkit-font-smoothing:antialiased; }
+        ::-webkit-scrollbar { width:5px; }
+        ::-webkit-scrollbar-track { background:#F4F3EF; }
+        ::-webkit-scrollbar-thumb { background:#D6D3D1; border-radius:10px; }
+
+        .reveal { opacity:0; transform:translateY(28px); transition:opacity 1.1s cubic-bezier(0.16,1,0.3,1), transform 1.1s cubic-bezier(0.16,1,0.3,1); }
+        .reveal.active { opacity:1; transform:translateY(0); }
+        .eyebrow { font-family:'Inter',sans-serif; text-transform:uppercase; letter-spacing:0.15em; font-size:0.7rem; font-weight:600; }
+        .bento-card { transition: transform 0.45s cubic-bezier(0.16,1,0.3,1), box-shadow 0.45s cubic-bezier(0.16,1,0.3,1); }
+        .bento-card:hover { transform:translateY(-4px); box-shadow:0 20px 40px -10px rgba(28,25,23,0.06); }
+
+        @media (pointer:fine) { html,body,*,a,button { cursor:none !important; } }
+
+        /* ── Nav mobile menu ── */
+        #mobile-menu { transition: opacity .28s ease, transform .32s cubic-bezier(0.16,1,0.3,1); }
+        #mobile-menu.closed { opacity:0; transform:translateY(-6px); pointer-events:none; }
+        #mobile-menu.open   { opacity:1; transform:translateY(0);    pointer-events:auto; }
+
+        /* ── Works carousel ── */
+        .works-track {
+            display:flex; gap:1.25rem;
+            overflow-x:auto; scroll-snap-type:x mandatory;
+            -webkit-overflow-scrolling:touch; scrollbar-width:none;
+            padding:2px 0 8px;
+        }
+        .works-track::-webkit-scrollbar { display:none; }
+        .work-card {
+            scroll-snap-align:start; flex:0 0 82vw; max-width:360px;
+            transition: transform .5s cubic-bezier(0.16,1,0.3,1), box-shadow .5s cubic-bezier(0.16,1,0.3,1);
+        }
+        @media (min-width:480px)  { .work-card { flex:0 0 70vw; max-width:380px; } }
+        @media (min-width:768px)  {
+            .works-track { display:grid; grid-template-columns:1fr 1fr; overflow-x:visible; scroll-snap-type:none; gap:1.5rem; }
+            .work-card   { flex:unset; max-width:unset; }
+        }
+        @media (min-width:1024px) {
+            .works-track { gap:2rem; }
+            .work-card:nth-child(even) { margin-top:5rem; }
+        }
+        .work-card:hover { transform:translateY(-5px); box-shadow:0 32px 64px -16px rgba(28,25,23,0.10); }
+
+        /* Chrome bar */
+        .card-chrome { height:34px; background:#fff; border-bottom:1px solid rgba(28,25,23,0.06); display:flex; align-items:center; padding:0 12px; position:relative; flex-shrink:0; }
+        .chrome-dots { display:flex; gap:5px; z-index:2; }
+        .chrome-dot  { width:9px; height:9px; border-radius:50%; background:#E5E5E5; border:1px solid #D4D4D4; transition:background .3s; }
+        .work-card:hover .chrome-dot:nth-child(1) { background:#fc5f57; }
+        .work-card:hover .chrome-dot:nth-child(2) { background:#febc2e; }
+        .work-card:hover .chrome-dot:nth-child(3) { background:#28c840; }
+        .chrome-url { position:absolute; left:50%; transform:translateX(-50%); height:24px; background:#F4F3EF; border-radius:6px; display:flex; align-items:center; justify-content:center; gap:5px; font-size:9.5px; font-family:'Inter',sans-serif; color:#78716C; width:62%; max-width:210px; overflow:hidden; padding:0 8px; transition:background .3s; white-space:nowrap; }
+        .work-card:hover .chrome-url { background:#fff; }
+
+        /* Mockup viewport */
+        .card-viewport { position:relative; width:100%; aspect-ratio:4/3; overflow:hidden; }
+
+        /* Hover overlay */
+        .card-overlay { position:absolute; inset:0; z-index:20; background:rgba(28,25,23,0); display:flex; align-items:center; justify-content:center; transition:background .4s; }
+        .work-card:hover .card-overlay { background:rgba(28,25,23,0.52); }
+        .overlay-cta { display:flex; align-items:center; gap:8px; background:#F4F3EF; color:#1C1917; padding:10px 20px; border-radius:999px; font-family:'Inter',sans-serif; font-size:11px; font-weight:600; letter-spacing:.04em; text-decoration:none; opacity:0; transform:translateY(8px) scale(.95); transition:opacity .3s .05s, transform .3s .05s cubic-bezier(0.16,1,0.3,1); white-space:nowrap; }
+        .work-card:hover .overlay-cta { opacity:1; transform:translateY(0) scale(1); }
+
+        /* Dot indicators */
+        .dot { width:6px; height:6px; border-radius:50%; background:#D6D3D1; transition:all .3s; }
+        .dot.active { background:#1C1917; width:18px; border-radius:3px; }
+
+        /* ── Desktop iframe / Mobile mockup toggle ── */
+        /* Mobile: show mockup, hide iframe layer */
+        .card-mockup      { display:block; width:100%; height:100%; }
+        .card-iframe-wrap { display:none; }
+
+        /* Desktop: show iframe layer, hide mockup */
+        @media (min-width:768px) {
+            .card-mockup      { display:none; }
+            .card-iframe-wrap { display:block; position:absolute; inset:0; overflow:hidden; background:#FAFAFA; }
         }
 
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: #F4F3EF; }
-        ::-webkit-scrollbar-thumb { background: #D6D3D1; border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: #A8A29E; }
+        /* Iframe scaled to desktop resolution inside card */
+        .card-iframe-wrap iframe {
+            position:absolute; top:0; left:0;
+            width:1280px; height:960px;
+            border:none; pointer-events:none; select:none;
+            transform-origin:top left;
+            transform:scale(0.4); /* overridden by JS per-card */
+            transition:transform 1s cubic-bezier(0.16,1,0.3,1);
+            background:transparent;
+        }
+        .work-card:hover .card-iframe-wrap iframe { transform:scale(calc(var(--iframe-scale, 0.4) * 1.025)); }
 
-        .reveal {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: all 1.2s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        .reveal.active {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .bento-card {
-            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        .bento-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 20px 40px -10px rgba(28, 25, 23, 0.05);
+        /* Roaming sim cursor inside iframe cards */
+        .sim-cursor-work {
+            position:absolute; top:0; left:0; z-index:30;
+            pointer-events:none; opacity:0;
+            transition:opacity .7s ease;
+            drop-shadow:0 2px 4px rgba(0,0,0,.3);
         }
 
-        .preview-cursor {
-            transition: all 0.8s cubic-bezier(0.25, 1, 0.5, 1);
-        }
+        /* Log items */
+        .log-item { opacity:.25; transform:translateY(14px); transition:opacity .8s cubic-bezier(0.16,1,0.3,1), transform .8s cubic-bezier(0.16,1,0.3,1); }
+        .log-item.active { opacity:1; transform:translateY(0); }
+        .preview-cursor { transition:transform .8s cubic-bezier(0.25,1,0.5,1); }
+        .click-ripple { animation:ripple .55s ease-out forwards; }
+        @keyframes ripple { 0%{transform:scale(0);opacity:.35;} 100%{transform:scale(3);opacity:0;} }
 
-        .click-ripple {
-            animation: ripple 0.6s ease-out forwards;
-        }
+        /* ═══════════════════════════════════════
+           CSS MOCKUPS – each project gets its own
+           visual identity drawn purely in CSS
+        ═══════════════════════════════════════ */
 
-        .log-item {
-            opacity: 0.3;
-            transform: translateY(15px);
-            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        .log-item.active {
-            opacity: 1;
-            transform: translateY(0);
-        }
+        /* Shared helpers */
+        .m-nav { display:flex; align-items:center; padding:0 14px; flex-shrink:0; }
+        .m-line { border-radius:2px; }
+        .m-dot  { border-radius:50%; }
+        .m-chip { border-radius:20px; }
+        .m-card { border-radius:8px; overflow:hidden; }
 
-        @keyframes ripple {
-            0%   { transform: scale(0); opacity: 0.4; background-color: #1C1917; }
-            100% { transform: scale(3); opacity: 0;   background-color: #1C1917; }
-        }
+        /* ── 1. Rit Yatra (warm travel) ── */
+        .p-rityatra { width:100%; height:100%; background:linear-gradient(160deg,#F5EFE4 0%,#E8D8C4 100%); display:flex; flex-direction:column; }
+        .p-rityatra .nav { height:36px; background:#fff8f2; border-bottom:1px solid rgba(194,94,62,.12); gap:10px; }
+        .p-rityatra .body { flex:1; padding:16px 16px 0; display:flex; flex-direction:column; gap:9px; }
+        .p-rityatra .search { height:32px; background:#fff; border-radius:8px; border:1px solid rgba(194,94,62,.2); display:flex; align-items:center; padding:0 10px; gap:7px; }
+        .p-rityatra .s-icon { width:9px; height:9px; border:2px solid #C25E3E; border-radius:50%; opacity:.55; flex-shrink:0; }
+        .p-rityatra .s-text { flex:1; height:4px; background:#D4B8A0; border-radius:2px; }
+        .p-rityatra .s-btn  { width:40px; height:20px; background:#C25E3E; border-radius:5px; opacity:.82; flex-shrink:0; }
+        .p-rityatra .chips  { display:flex; gap:5px; flex-wrap:wrap; }
+        .p-rityatra .ch-on  { height:20px; width:52px; background:#C25E3E; opacity:.8; }
+        .p-rityatra .ch-off { height:20px; width:42px; background:#fff; border:1px solid rgba(139,106,80,.22); }
+        .p-rityatra .cards  { display:flex; gap:7px; margin-top:4px; }
+        .p-rityatra .dc     { flex:1; height:52px; border-radius:8px; position:relative; overflow:hidden; }
+        .p-rityatra .dc-lbl { position:absolute; bottom:5px; left:7px; width:28px; height:4px; background:#fff; border-radius:2px; opacity:.8; }
 
-        .eyebrow {
-            font-family: 'Inter', sans-serif;
-            text-transform: uppercase;
-            letter-spacing: 0.15em;
-            font-size: 0.75rem;
-            font-weight: 600;
-        }
+        /* ── 2. RMCHRI (medical) ── */
+        .p-rmchri { width:100%; height:100%; background:#F8FAFB; display:flex; flex-direction:column; }
+        .p-rmchri .nav { height:38px; background:#1a3a5c; gap:8px; }
+        .p-rmchri .hero { background:linear-gradient(135deg,#1a3a5c,#2563a8); padding:16px 16px 14px; display:flex; flex-direction:column; gap:8px; }
+        .p-rmchri .stats { display:flex; border-top:1px solid #e5edf5; }
+        .p-rmchri .stat { flex:1; padding:10px 12px; border-right:1px solid #e5edf5; display:flex; flex-direction:column; gap:4px; }
+        .p-rmchri .stat:last-child { border-right:none; }
+        .p-rmchri .main { flex:1; display:flex; }
+        .p-rmchri .sidebar { width:80px; background:#f0f4f8; border-right:1px solid #e5edf5; padding:10px 9px; display:flex; flex-direction:column; gap:5px; }
+        .p-rmchri .sb-item { height:20px; background:#fff; border-radius:4px; border:1px solid #e5edf5; display:flex; align-items:center; padding:0 7px; gap:5px; }
+        .p-rmchri .content { flex:1; padding:10px 12px; display:flex; flex-direction:column; gap:7px; }
+        .p-rmchri .c-block { border-radius:6px; border:1px solid #e5edf5; background:#fff; }
 
-        /* Custom cursor — desktop only */
-        @media (pointer: fine) {
-            html, body, *, a, button, iframe { cursor: none !important; }
-        }
+        /* ── 3. Cake House (bakery) ── */
+        .p-cake { width:100%; height:100%; background:#FDF6F0; display:flex; flex-direction:column; }
+        .p-cake .nav { height:36px; background:#fff; border-bottom:1px solid rgba(212,180,160,.25); gap:8px; }
+        .p-cake .hero-strip { background:linear-gradient(120deg,#f7e8de,#fde8d0); padding:14px 16px; display:flex; align-items:center; gap:10px; }
+        .p-cake .ht { flex:1; display:flex; flex-direction:column; gap:5px; }
+        .p-cake .hi { width:64px; height:64px; background:linear-gradient(145deg,#E8C4A0,#C49A6C); border-radius:50%; position:relative; overflow:hidden; flex-shrink:0; }
+        .p-cake .hi-shine { position:absolute; top:7px; right:9px; width:14px; height:14px; background:rgba(255,255,255,.6); border-radius:50%; filter:blur(4px); }
+        .p-cake .grid { flex:1; padding:10px 14px; }
+        .p-cake .gl  { width:72px; height:6px; background:#5C2D0A; border-radius:2px; opacity:.5; margin-bottom:9px; }
+        .p-cake .products { display:grid; grid-template-columns:repeat(3,1fr); gap:6px; }
+        .p-cake .pc { border-radius:7px; overflow:hidden; background:#fff; border:1px solid rgba(200,160,130,.2); }
+        .p-cake .pi { height:36px; }
+        .p-cake .pm { padding:5px 6px; display:flex; flex-direction:column; gap:3px; }
+        .p-cake .pn { height:4px; background:#5C2D0A; border-radius:2px; width:76%; opacity:.6; }
+        .p-cake .pp { height:4px; background:#C25E3E; border-radius:2px; width:40%; opacity:.7; }
 
-        /* Mobile nav drawer */
-        #mobile-menu {
-            transition: opacity 0.3s ease, transform 0.35s cubic-bezier(0.16,1,0.3,1);
-        }
-        #mobile-menu.hidden-menu {
-            opacity: 0;
-            transform: translateY(-8px);
-            pointer-events: none;
-        }
-        #mobile-menu.open-menu {
-            opacity: 1;
-            transform: translateY(0);
-            pointer-events: auto;
-        }
+        /* ── 4. Anto Merary (dark creative) ── */
+        .p-anto { width:100%; height:100%; background:#0E0E0F; display:flex; flex-direction:column; }
+        .p-anto .nav { height:36px; border-bottom:1px solid rgba(255,255,255,.06); gap:8px; }
+        .p-anto .body { flex:1; padding:16px 16px 12px; display:flex; flex-direction:column; justify-content:space-between; }
+        .p-anto .top  { display:flex; flex-direction:column; gap:7px; }
+        .p-anto .ey   { display:flex; align-items:center; gap:5px; }
+        .p-anto .grids{ display:flex; flex-direction:column; gap:6px; }
+        .p-anto .grow { display:flex; gap:6px; }
+        .p-anto .th   { flex:1; border-radius:7px; overflow:hidden; position:relative; }
+        .p-anto .tl   { position:absolute; bottom:5px; left:7px; width:24px; height:3px; background:rgba(255,255,255,.5); border-radius:2px; }
     </style>
 </head>
 
 <body class="selection:bg-ink selection:text-cream overflow-hidden" id="body-container">
 
-    <!-- Premium Preloader -->
-    <div id="preloader"
-        class="fixed inset-0 bg-ink z-[10000] flex flex-col justify-between p-6 md:p-12 text-cream transition-transform duration-[1200ms] ease-[cubic-bezier(0.76,0,0.24,1)]">
-        <div class="flex justify-between items-start font-sans text-xs uppercase tracking-widest opacity-60">
-            <div>
-                <span class="block">Synflow Studio</span>
-                <span class="block mt-1">System Initialization</span>
-            </div>
-            <div class="w-8 h-8 rounded-full border border-cream/20 flex items-center justify-center">
-                <i data-lucide="infinity" class="w-4 h-4 text-cream"></i>
-            </div>
-        </div>
-        <div class="flex items-end justify-between w-full">
-            <div class="w-1/3 h-px bg-white/20 mb-4 relative overflow-hidden">
-                <div id="loader-progress" class="absolute inset-y-0 left-0 bg-white w-0 transition-all duration-75 ease-linear"></div>
-            </div>
-            <div class="font-sans text-[20vw] sm:text-[15vw] md:text-[12vw] font-light leading-none tracking-tighter">
-                <span id="loader-counter">00</span><span class="text-[10vw] sm:text-[8vw] md:text-[5vw] opacity-50">%</span>
-            </div>
+<!-- ═══════ PRELOADER ═══════ -->
+<div id="preloader" class="fixed inset-0 bg-ink z-[10000] flex flex-col justify-between text-cream transition-transform duration-[1200ms] ease-[cubic-bezier(0.76,0,0.24,1)]" style="padding:clamp(1.25rem,4vw,3rem);">
+    <div class="flex justify-between items-start font-sans text-[10px] uppercase tracking-widest opacity-60">
+        <div><span class="block">Synflow Studio</span><span class="block mt-1">System Initialization</span></div>
+        <div class="w-8 h-8 rounded-full border border-cream/20 flex items-center justify-center">
+            <i data-lucide="infinity" class="w-4 h-4 text-cream"></i>
         </div>
     </div>
-
-    <!-- Custom Smooth Cursor (desktop only) -->
-    <div id="custom-cursor" class="fixed pointer-events-none z-[9999] hidden"
-        style="left:0;top:0;transform:translate3d(0px,0px,0px);margin-left:-5px;margin-top:-6px;">
-        <div id="cursor-graphic" class="transition-transform duration-200" style="transform-origin:5px 6px;">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="#000000" stroke="#FFFFFF" stroke-width="1.5" stroke-linejoin="round" class="drop-shadow-sm pointer-events-none">
-                <path class="cursor-path transition-colors duration-200"
-                    d="M19.503 9.97c1.204.489 1.112 2.224-.137 2.583l-6.306 1.813l-2.88 5.895c-.57 1.168-2.295.957-2.568-.314L4.677 6.257A1.369 1.369 0 0 1 6.53 4.7l12.973 5.27Z"
-                    clip-rule="evenodd"></path>
-            </svg>
+    <div class="flex items-end justify-between w-full">
+        <div class="h-px bg-white/20 mb-4 relative overflow-hidden" style="width:clamp(80px,30vw,200px);">
+            <div id="loader-progress" class="absolute inset-y-0 left-0 bg-white w-0 transition-all duration-75 ease-linear"></div>
+        </div>
+        <div class="font-sans font-light leading-none tracking-tighter" style="font-size:clamp(3rem,16vw,9rem);">
+            <span id="loader-counter">00</span><span style="font-size:clamp(1.25rem,8vw,4.5rem)" class="opacity-50">%</span>
         </div>
     </div>
+</div>
 
-    <!-- Navigation -->
-    <nav class="fixed w-full z-40 top-0 border-b border-ink/5 bg-cream/80 backdrop-blur-md">
-        <div class="max-w-7xl mx-auto px-5 md:px-8 h-16 md:h-20 flex items-center justify-between gap-4">
+<!-- ═══════ CURSOR ═══════ -->
+<div id="custom-cursor" class="fixed pointer-events-none z-[9999] hidden" style="left:0;top:0;transform:translate3d(0,0,0);margin-left:-5px;margin-top:-6px;">
+    <div id="cursor-graphic" class="transition-transform duration-200" style="transform-origin:5px 6px;">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="#000" stroke="#FFF" stroke-width="1.5" stroke-linejoin="round">
+            <path class="cursor-path transition-colors duration-200" d="M19.503 9.97c1.204.489 1.112 2.224-.137 2.583l-6.306 1.813l-2.88 5.895c-.57 1.168-2.295.957-2.568-.314L4.677 6.257A1.369 1.369 0 0 1 6.53 4.7l12.973 5.27Z"></path>
+        </svg>
+    </div>
+</div>
 
-            <!-- Logo -->
-            <a href="#" class="text-lg md:text-xl font-serif font-semibold tracking-tight flex items-center gap-2.5 text-ink shrink-0">
-                <div class="w-7 h-7 md:w-8 md:h-8 rounded-full border border-ink/20 flex items-center justify-center">
-                    <i data-lucide="infinity" class="w-3.5 h-3.5 md:w-4 md:h-4 text-ink"></i>
-                </div>
-                Synflow
-            </a>
-
-            <!-- Desktop Nav Links -->
-            <div class="hidden md:flex gap-8 text-[12px] uppercase tracking-widest font-semibold text-ink-light">
-                <a href="#work"     class="hover:text-ink transition-colors">Selected Works</a>
-                <a href="#services" class="hover:text-ink transition-colors">Expertise</a>
-                <a href="#workflow" class="hover:text-ink transition-colors">The Platform</a>
-                <a href="#about"    class="hover:text-ink transition-colors">Studio</a>
+<!-- ═══════ NAV ═══════ -->
+<nav class="fixed w-full z-40 top-0 border-b border-ink/5 bg-cream/85 backdrop-blur-md">
+    <div class="max-w-7xl mx-auto" style="padding:0 clamp(1.1rem,4vw,2rem); height:clamp(52px,9vw,80px); display:flex; align-items:center; justify-content:space-between; gap:12px;">
+        <a href="#" class="font-serif font-semibold tracking-tight flex items-center gap-2 text-ink shrink-0" style="font-size:clamp(.95rem,2.5vw,1.25rem);">
+            <div class="w-7 h-7 rounded-full border border-ink/20 flex items-center justify-center shrink-0">
+                <i data-lucide="infinity" class="w-3.5 h-3.5 text-ink"></i>
             </div>
-
-            <!-- Right side: CTA + Hamburger -->
-            <div class="flex items-center gap-3">
-                <button class="bg-ink text-cream px-4 md:px-6 py-2 md:py-2.5 rounded-full text-xs md:text-sm font-medium hover:bg-ink-light transition-colors duration-300 whitespace-nowrap">
-                    Start a project
-                </button>
-                <!-- Hamburger (mobile only) -->
-                <button id="hamburger" class="md:hidden w-8 h-8 flex flex-col items-center justify-center gap-[5px] shrink-0" aria-label="Open menu">
-                    <span class="ham-line block w-5 h-px bg-ink transition-all duration-300"></span>
-                    <span class="ham-line block w-5 h-px bg-ink transition-all duration-300"></span>
-                    <span class="ham-line block w-3.5 h-px bg-ink transition-all duration-300 self-end"></span>
-                </button>
-            </div>
+            Synflow
+        </a>
+        <div class="hidden md:flex gap-6 lg:gap-8 text-[11px] uppercase tracking-widest font-semibold text-ink-light">
+            <a href="#work"     class="hover:text-ink transition-colors">Selected Works</a>
+            <a href="#services" class="hover:text-ink transition-colors">Expertise</a>
+            <a href="#workflow" class="hover:text-ink transition-colors">The Platform</a>
         </div>
-
-        <!-- Mobile dropdown menu -->
-        <div id="mobile-menu" class="hidden-menu md:hidden absolute top-full left-0 w-full bg-cream/95 backdrop-blur-md border-b border-ink/10 shadow-lg">
-            <div class="flex flex-col px-5 py-5 gap-1">
-                <a href="#work"     class="mobile-nav-link text-sm font-semibold uppercase tracking-widest text-ink-light hover:text-ink transition-colors py-3 border-b border-ink/5">Selected Works</a>
-                <a href="#services" class="mobile-nav-link text-sm font-semibold uppercase tracking-widest text-ink-light hover:text-ink transition-colors py-3 border-b border-ink/5">Expertise</a>
-                <a href="#workflow" class="mobile-nav-link text-sm font-semibold uppercase tracking-widest text-ink-light hover:text-ink transition-colors py-3 border-b border-ink/5">The Platform</a>
-                <a href="#about"    class="mobile-nav-link text-sm font-semibold uppercase tracking-widest text-ink-light hover:text-ink transition-colors py-3">Studio</a>
-            </div>
-        </div>
-    </nav>
-
-    <!-- Hero Section -->
-    <section class="relative min-h-screen flex items-center justify-center pt-24 pb-16 md:pt-32 md:pb-20">
-        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] md:w-[800px] h-[600px] md:h-[800px] bg-white/40 rounded-full blur-[100px] -z-10 pointer-events-none"></div>
-
-        <div class="max-w-5xl mx-auto px-5 md:px-6 text-center z-10 relative w-full">
-
-            <div class="inline-flex items-center gap-2 px-4 md:px-5 py-2 md:py-2.5 rounded-full border border-ink/10 bg-white/60 shadow-sm backdrop-blur-sm text-ink mb-8 md:mb-10 animate-fade-in-up eyebrow" style="animation-delay:0.1s;">
-                <i data-lucide="sparkles" class="w-3 h-3 md:w-3.5 md:h-3.5 text-accent"></i>
-                <span class="pt-px">Next-Generation Architecture</span>
-            </div>
-
-            <!-- FIXED: progressive font sizing so it never overflows on small phones -->
-            <h1 class="text-[2.4rem] sm:text-5xl md:text-7xl lg:text-[6.5rem] xl:text-[7rem] font-serif text-ink leading-[1.05] mb-6 md:mb-8 animate-fade-in-up tracking-tight"
-                style="animation-delay:0.2s;">
-                Digital excellence. <br>
-                <span class="italic text-ink-light font-light">Automated precision.</span>
-            </h1>
-
-            <p class="text-base sm:text-lg md:text-xl lg:text-2xl text-ink-light mb-10 md:mb-14 max-w-3xl mx-auto font-sans leading-relaxed animate-fade-in-up font-light"
-                style="animation-delay:0.3s;">
-                We design high-performance web interfaces seamlessly integrated with autonomous AI workflows. Engineered for ambitious brands ready to scale without friction.
-            </p>
-
-            <div class="flex flex-col sm:flex-row items-center justify-center gap-4 md:gap-5 animate-fade-in-up"
-                style="animation-delay:0.4s;">
-                <button class="w-full sm:w-auto bg-ink text-cream px-7 md:px-8 py-3.5 md:py-4 rounded-full font-medium hover:bg-ink-light hover:shadow-lg transition-all duration-300 flex items-center justify-center gap-3 group">
-                    <span>Initiate a project</span>
-                    <div class="w-6 h-6 rounded-full bg-cream/20 flex items-center justify-center group-hover:translate-x-1 transition-transform">
-                        <i data-lucide="arrow-right" class="w-3.5 h-3.5 text-cream"></i>
-                    </div>
-                </button>
-                <button class="w-full sm:w-auto bg-white/50 border border-ink/10 text-ink px-7 md:px-8 py-3.5 md:py-4 rounded-full font-medium hover:bg-white hover:border-ink/30 hover:shadow-sm transition-all duration-300 flex items-center justify-center gap-3 group">
-                    <i data-lucide="compass" class="w-4 h-4 text-ink/50 group-hover:text-ink transition-colors"></i>
-                    <span>Explore capabilities</span>
-                </button>
-            </div>
-        </div>
-    </section>
-
-    <!-- Portfolio / Live Works Section -->
-    <section id="work" class="py-20 md:py-32 relative bg-white border-t border-ink/5">
-        <div class="max-w-7xl mx-auto px-5 md:px-6">
-            <div class="mb-12 md:mb-20 reveal">
-                <div class="eyebrow text-accent mb-4">Selected Works</div>
-                <h2 class="text-3xl sm:text-4xl md:text-5xl font-serif tracking-tight text-ink mb-4 md:mb-6">Digital spaces we've engineered.</h2>
-                <p class="text-ink-light max-w-2xl text-base md:text-lg font-light leading-relaxed">Interact with live deployments of our recent architectures directly within this environment.</p>
-            </div>
-
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 md:gap-12 lg:gap-16 items-start">
-
-                <!-- Left Column -->
-                <div class="flex flex-col gap-10 md:gap-16 lg:gap-24">
-
-                    <!-- Project 1: Rit Yatra -->
-                    <div class="reveal group flex flex-col gap-4 md:gap-6">
-                        <div class="relative w-full rounded-2xl border border-ink/10 bg-cream-dark shadow-sm overflow-hidden transition-all duration-700 group-hover:shadow-[0_40px_80px_-20px_rgba(0,0,0,0.12)] group-hover:-translate-y-3 cursor-pointer">
-                            <div class="h-9 md:h-10 bg-white border-b border-ink/5 flex items-center px-3 md:px-4 justify-between">
-                                <div class="flex gap-1.5 z-10">
-                                    <div class="w-2 h-2 md:w-2.5 md:h-2.5 rounded-full bg-[#E5E5E5] border border-[#D4D4D4] group-hover:bg-red-400 transition-colors"></div>
-                                    <div class="w-2 h-2 md:w-2.5 md:h-2.5 rounded-full bg-[#E5E5E5] border border-[#D4D4D4] group-hover:bg-yellow-400 transition-colors"></div>
-                                    <div class="w-2 h-2 md:w-2.5 md:h-2.5 rounded-full bg-[#E5E5E5] border border-[#D4D4D4] group-hover:bg-green-400 transition-colors"></div>
-                                </div>
-                                <div class="absolute left-1/2 -translate-x-1/2 w-2/3 max-w-[260px] md:max-w-[320px] h-7 bg-[#F4F3EF] rounded-md text-[9.5px] md:text-[10.5px] text-ink-light font-sans tracking-wide flex items-center justify-center gap-2 group-hover:bg-white transition-colors truncate px-2">
-                                    <i data-lucide="lock" class="w-2 h-2 md:w-2.5 md:h-2.5 text-ink/40 shrink-0"></i>
-                                    <span class="truncate">https://rityatra26.vercel.app/</span>
-                                </div>
-                                <a href="https://rityatra26.vercel.app/" target="_blank" rel="noopener noreferrer" class="text-ink/30 hover:text-ink transition-colors z-10">
-                                    <i data-lucide="external-link" class="w-3 h-3 md:w-3.5 md:h-3.5"></i>
-                                </a>
-                            </div>
-                            <div class="relative w-full h-[280px] sm:h-[380px] md:h-[480px] lg:h-[550px] bg-[#FAFAFA] overflow-hidden">
-                                <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none z-0">
-                                    <i data-lucide="loader-2" class="w-5 h-5 animate-spin mb-2 text-ink/20"></i>
-                                </div>
-                                <iframe src="https://rityatra26.vercel.app/"
-                                    class="relative z-10 w-full h-full border-0 bg-transparent pointer-events-none select-none transition-transform duration-1000 group-hover:scale-[1.02]"
-                                    loading="lazy" tabindex="-1"></iframe>
-                                <div class="absolute inset-0 bg-ink/0 group-hover:bg-ink/[0.02] transition-colors duration-500 z-20 pointer-events-none"></div>
-                                <div class="sim-cursor-work absolute top-0 left-0 z-50 pointer-events-none drop-shadow-md opacity-0 transition-opacity duration-700">
-                                    <svg width="22" height="22" viewBox="0 0 24 24" fill="#1C1917" stroke="white" stroke-width="2">
-                                        <path d="M5.5 3 L5.5 20 L9.5 16 L13.5 23 L16.5 21.5 L12.5 14.5 L19 14.5 Z" stroke-linejoin="round"></path>
-                                    </svg>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="flex justify-between items-start px-1 md:px-2">
-                            <div>
-                                <h3 class="font-serif text-2xl md:text-3xl text-ink mb-1.5 group-hover:text-accent transition-colors">Rit Yatra</h3>
-                                <p class="text-xs md:text-sm text-ink-light font-light">Custom Travel & Booking Architecture</p>
-                            </div>
-                            <span class="text-[10px] text-ink font-mono uppercase tracking-widest border border-ink/10 bg-cream px-2.5 md:px-3 py-1 md:py-1.5 rounded-full mt-1 shrink-0">Live</span>
-                        </div>
-                    </div>
-
-                    <!-- Project 3: Cake House -->
-                    <div class="reveal group flex flex-col gap-4 md:gap-6">
-                        <div class="relative w-full rounded-2xl border border-ink/10 bg-cream-dark shadow-sm overflow-hidden transition-all duration-700 group-hover:shadow-[0_40px_80px_-20px_rgba(0,0,0,0.12)] group-hover:-translate-y-3 cursor-pointer">
-                            <div class="h-9 md:h-10 bg-white border-b border-ink/5 flex items-center px-3 md:px-4 justify-between">
-                                <div class="flex gap-1.5 z-10">
-                                    <div class="w-2 h-2 md:w-2.5 md:h-2.5 rounded-full bg-[#E5E5E5] border border-[#D4D4D4] group-hover:bg-red-400 transition-colors"></div>
-                                    <div class="w-2 h-2 md:w-2.5 md:h-2.5 rounded-full bg-[#E5E5E5] border border-[#D4D4D4] group-hover:bg-yellow-400 transition-colors"></div>
-                                    <div class="w-2 h-2 md:w-2.5 md:h-2.5 rounded-full bg-[#E5E5E5] border border-[#D4D4D4] group-hover:bg-green-400 transition-colors"></div>
-                                </div>
-                                <div class="absolute left-1/2 -translate-x-1/2 w-2/3 max-w-[260px] md:max-w-[320px] h-7 bg-[#F4F3EF] rounded-md text-[9.5px] md:text-[10.5px] text-ink-light font-sans tracking-wide flex items-center justify-center gap-2 group-hover:bg-white transition-colors truncate px-2">
-                                    <i data-lucide="lock" class="w-2 h-2 md:w-2.5 md:h-2.5 text-ink/40 shrink-0"></i>
-                                    <span class="truncate">cake-house-teal.vercel.app</span>
-                                </div>
-                                <a href="https://cake-house-ten.vercel.app/" target="_blank" rel="noopener noreferrer" class="text-ink/30 hover:text-ink transition-colors z-10">
-                                    <i data-lucide="external-link" class="w-3 h-3 md:w-3.5 md:h-3.5"></i>
-                                </a>
-                            </div>
-                            <div class="relative w-full h-[280px] sm:h-[380px] md:h-[480px] lg:h-[550px] bg-[#FAFAFA] overflow-hidden">
-                                <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none z-0">
-                                    <i data-lucide="loader-2" class="w-5 h-5 animate-spin mb-2 text-ink/20"></i>
-                                </div>
-                                <iframe src="https://cake-house-teal.vercel.app/"
-                                    class="relative z-10 w-full h-full border-0 bg-transparent pointer-events-none select-none transition-transform duration-1000 group-hover:scale-[1.02]"
-                                    loading="lazy" tabindex="-1"></iframe>
-                                <div class="absolute inset-0 bg-ink/0 group-hover:bg-ink/[0.02] transition-colors duration-500 z-20 pointer-events-none"></div>
-                                <div class="sim-cursor-work absolute top-0 left-0 z-50 pointer-events-none drop-shadow-md opacity-0 transition-opacity duration-700">
-                                    <svg width="22" height="22" viewBox="0 0 24 24" fill="#1C1917" stroke="white" stroke-width="2">
-                                        <path d="M5.5 3 L5.5 20 L9.5 16 L13.5 23 L16.5 21.5 L12.5 14.5 L19 14.5 Z" stroke-linejoin="round"></path>
-                                    </svg>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="flex justify-between items-start px-1 md:px-2">
-                            <div>
-                                <h3 class="font-serif text-2xl md:text-3xl text-ink mb-1.5 group-hover:text-accent transition-colors">Cake House</h3>
-                                <p class="text-xs md:text-sm text-ink-light font-light">E-commerce / Bakery Frontend</p>
-                            </div>
-                            <span class="text-[10px] text-ink font-mono uppercase tracking-widest border border-ink/10 bg-cream px-2.5 md:px-3 py-1 md:py-1.5 rounded-full mt-1 shrink-0">Live</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Right Column (staggered on desktop) -->
-                <div class="flex flex-col gap-10 md:gap-16 lg:gap-24 lg:mt-32">
-
-                    <!-- Project 2: RMCHRI -->
-                    <div class="reveal group flex flex-col gap-4 md:gap-6">
-                        <div class="relative w-full rounded-2xl border border-ink/10 bg-cream-dark shadow-sm overflow-hidden transition-all duration-700 group-hover:shadow-[0_40px_80px_-20px_rgba(0,0,0,0.12)] group-hover:-translate-y-3 cursor-pointer">
-                            <div class="h-9 md:h-10 bg-white border-b border-ink/5 flex items-center px-3 md:px-4 justify-between">
-                                <div class="flex gap-1.5 z-10">
-                                    <div class="w-2 h-2 md:w-2.5 md:h-2.5 rounded-full bg-[#E5E5E5] border border-[#D4D4D4] group-hover:bg-red-400 transition-colors"></div>
-                                    <div class="w-2 h-2 md:w-2.5 md:h-2.5 rounded-full bg-[#E5E5E5] border border-[#D4D4D4] group-hover:bg-yellow-400 transition-colors"></div>
-                                    <div class="w-2 h-2 md:w-2.5 md:h-2.5 rounded-full bg-[#E5E5E5] border border-[#D4D4D4] group-hover:bg-green-400 transition-colors"></div>
-                                </div>
-                                <div class="absolute left-1/2 -translate-x-1/2 w-2/3 max-w-[260px] md:max-w-[320px] h-7 bg-[#F4F3EF] rounded-md text-[9.5px] md:text-[10.5px] text-ink-light font-sans tracking-wide flex items-center justify-center gap-2 group-hover:bg-white transition-colors truncate px-2">
-                                    <i data-lucide="lock" class="w-2 h-2 md:w-2.5 md:h-2.5 text-ink/40 shrink-0"></i>
-                                    <span class="truncate">rmchri.in</span>
-                                </div>
-                                <a href="https://rmchri.in/" target="_blank" rel="noopener noreferrer" class="text-ink/30 hover:text-ink transition-colors z-10">
-                                    <i data-lucide="external-link" class="w-3 h-3 md:w-3.5 md:h-3.5"></i>
-                                </a>
-                            </div>
-                            <div class="relative w-full h-[280px] sm:h-[380px] md:h-[480px] lg:h-[550px] bg-[#FAFAFA] overflow-hidden">
-                                <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none z-0">
-                                    <i data-lucide="loader-2" class="w-5 h-5 animate-spin mb-2 text-ink/20"></i>
-                                </div>
-                                <iframe src="https://rmchri.in/"
-                                    class="relative z-10 w-full h-full border-0 bg-transparent pointer-events-none select-none transition-transform duration-1000 group-hover:scale-[1.02]"
-                                    loading="lazy" tabindex="-1"></iframe>
-                                <div class="absolute inset-0 bg-ink/0 group-hover:bg-ink/[0.02] transition-colors duration-500 z-20 pointer-events-none"></div>
-                                <div class="sim-cursor-work absolute top-0 left-0 z-50 pointer-events-none drop-shadow-md opacity-0 transition-opacity duration-700">
-                                    <svg width="22" height="22" viewBox="0 0 24 24" fill="#1C1917" stroke="white" stroke-width="2">
-                                        <path d="M5.5 3 L5.5 20 L9.5 16 L13.5 23 L16.5 21.5 L12.5 14.5 L19 14.5 Z" stroke-linejoin="round"></path>
-                                    </svg>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="flex justify-between items-start px-1 md:px-2">
-                            <div>
-                                <h3 class="font-serif text-2xl md:text-3xl text-ink mb-1.5 group-hover:text-accent transition-colors">RMCHRI</h3>
-                                <p class="text-xs md:text-sm text-ink-light font-light">Medical Institution Platform</p>
-                            </div>
-                            <span class="text-[10px] text-ink font-mono uppercase tracking-widest border border-ink/10 bg-cream px-2.5 md:px-3 py-1 md:py-1.5 rounded-full mt-1 shrink-0">Live</span>
-                        </div>
-                    </div>
-
-                    <!-- Project 4: Anto Merary -->
-                    <div class="reveal group flex flex-col gap-4 md:gap-6">
-                        <div class="relative w-full rounded-2xl border border-ink/10 bg-cream-dark shadow-sm overflow-hidden transition-all duration-700 group-hover:shadow-[0_40px_80px_-20px_rgba(0,0,0,0.12)] group-hover:-translate-y-3 cursor-pointer">
-                            <div class="h-9 md:h-10 bg-white border-b border-ink/5 flex items-center px-3 md:px-4 justify-between">
-                                <div class="flex gap-1.5 z-10">
-                                    <div class="w-2 h-2 md:w-2.5 md:h-2.5 rounded-full bg-[#E5E5E5] border border-[#D4D4D4] group-hover:bg-red-400 transition-colors"></div>
-                                    <div class="w-2 h-2 md:w-2.5 md:h-2.5 rounded-full bg-[#E5E5E5] border border-[#D4D4D4] group-hover:bg-yellow-400 transition-colors"></div>
-                                    <div class="w-2 h-2 md:w-2.5 md:h-2.5 rounded-full bg-[#E5E5E5] border border-[#D4D4D4] group-hover:bg-green-400 transition-colors"></div>
-                                </div>
-                                <div class="absolute left-1/2 -translate-x-1/2 w-2/3 max-w-[260px] md:max-w-[320px] h-7 bg-[#F4F3EF] rounded-md text-[9.5px] md:text-[10.5px] text-ink-light font-sans tracking-wide flex items-center justify-center gap-2 group-hover:bg-white transition-colors truncate px-2">
-                                    <i data-lucide="lock" class="w-2 h-2 md:w-2.5 md:h-2.5 text-ink/40 shrink-0"></i>
-                                    <span class="truncate">anto-merary.vercel.app</span>
-                                </div>
-                                <a href="https://anto-merary-s-portfolio.vercel.app/" target="_blank" rel="noopener noreferrer" class="text-ink/30 hover:text-ink transition-colors z-10">
-                                    <i data-lucide="external-link" class="w-3 h-3 md:w-3.5 md:h-3.5"></i>
-                                </a>
-                            </div>
-                            <div class="relative w-full h-[280px] sm:h-[380px] md:h-[480px] lg:h-[550px] bg-[#FAFAFA] overflow-hidden">
-                                <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none z-0">
-                                    <i data-lucide="loader-2" class="w-5 h-5 animate-spin mb-2 text-ink/20"></i>
-                                </div>
-                                <iframe src="https://anto-merary-s-portfolio.vercel.app/"
-                                    class="relative z-10 w-full h-full border-0 bg-transparent pointer-events-none select-none transition-transform duration-1000 group-hover:scale-[1.02]"
-                                    loading="lazy" tabindex="-1"></iframe>
-                                <div class="absolute inset-0 bg-ink/0 group-hover:bg-ink/[0.02] transition-colors duration-500 z-20 pointer-events-none"></div>
-                                <div class="sim-cursor-work absolute top-0 left-0 z-50 pointer-events-none drop-shadow-md opacity-0 transition-opacity duration-700">
-                                    <svg width="22" height="22" viewBox="0 0 24 24" fill="#1C1917" stroke="white" stroke-width="2">
-                                        <path d="M5.5 3 L5.5 20 L9.5 16 L13.5 23 L16.5 21.5 L12.5 14.5 L19 14.5 Z" stroke-linejoin="round"></path>
-                                    </svg>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="flex justify-between items-start px-1 md:px-2">
-                            <div>
-                                <h3 class="font-serif text-2xl md:text-3xl text-ink mb-1.5 group-hover:text-accent transition-colors">Anto Merary</h3>
-                                <p class="text-xs md:text-sm text-ink-light font-light">Creative Personal Portfolio</p>
-                            </div>
-                            <span class="text-[10px] text-ink font-mono uppercase tracking-widest border border-ink/10 bg-cream px-2.5 md:px-3 py-1 md:py-1.5 rounded-full mt-1 shrink-0">Live</span>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </section>
-
-    <!-- Platform / Interactive Browser Section -->
-    <section id="workflow" class="py-20 md:py-32 relative bg-cream border-t border-ink/5">
-        <div class="max-w-7xl mx-auto px-5 md:px-6">
-            <div class="text-center mb-12 md:mb-20 reveal">
-                <div class="eyebrow text-accent mb-4">The Platform</div>
-                <h2 class="text-3xl sm:text-4xl md:text-5xl font-serif tracking-tight text-ink mb-4 md:mb-6">Intelligence by design.</h2>
-                <p class="text-ink-light max-w-2xl mx-auto text-base md:text-lg font-light leading-relaxed">Observe how a beautifully crafted frontend seamlessly triggers complex backend orchestration without a single line of visible code.</p>
-            </div>
-
-            <div class="relative w-full max-w-5xl mx-auto rounded-2xl border border-ink/10 bg-cream-dark shadow-[0_20px_60px_-15px_rgba(0,0,0,0.05)] overflow-hidden reveal">
-                <!-- Window Controls -->
-                <div class="h-10 md:h-12 bg-white border-b border-ink/5 flex items-center px-4 md:px-5 gap-2 relative">
-                    <div class="flex gap-1.5 md:gap-2 z-10">
-                        <div class="w-2.5 h-2.5 md:w-3 md:h-3 rounded-full bg-[#E5E5E5] border border-[#D4D4D4]"></div>
-                        <div class="w-2.5 h-2.5 md:w-3 md:h-3 rounded-full bg-[#E5E5E5] border border-[#D4D4D4]"></div>
-                        <div class="w-2.5 h-2.5 md:w-3 md:h-3 rounded-full bg-[#E5E5E5] border border-[#D4D4D4]"></div>
-                    </div>
-                    <div class="absolute left-1/2 -translate-x-1/2 w-48 md:w-64 lg:w-96 h-6 md:h-7 bg-cream rounded-md flex items-center justify-center text-[10px] md:text-[11px] text-ink-light font-sans tracking-wide">
-                        <i data-lucide="lock" class="w-2.5 h-2.5 mr-1.5 opacity-50"></i> workspace.synflow.studio
-                    </div>
-                </div>
-
-                <!-- Preview Area -->
-                <div class="relative h-[380px] sm:h-[480px] md:h-[560px] lg:h-[650px] bg-[#FAFAFA] overflow-hidden" id="preview-container">
-
-                    <!-- Simulated Cursor -->
-                    <div id="sim-cursor" class="absolute top-[80%] left-[80%] z-50 preview-cursor pointer-events-none flex items-center justify-center">
-                        <svg width="22" height="22" viewBox="0 0 24 24" fill="#1C1917" stroke="white" stroke-width="2" class="drop-shadow-md">
-                            <path d="M3 3l7.07 16.97 2.51-7.39 7.39-2.51L3 3z"></path>
-                        </svg>
-                        <div id="cursor-ripple" class="absolute w-12 h-12 rounded-full scale-0 pointer-events-none"></div>
-                    </div>
-
-                    <!-- State 1: Website Wireframe -->
-                    <div id="state-1" class="absolute inset-0 p-4 sm:p-8 md:p-12 lg:p-16 transition-all duration-[1200ms] ease-[cubic-bezier(0.16,1,0.3,1)]" style="transform-origin:center top;">
-                        <div class="w-full h-full flex flex-col gap-5 md:gap-10 max-w-4xl mx-auto bg-white rounded-2xl border border-ink/5 p-5 sm:p-7 md:p-10 shadow-sm">
-                            <div class="flex justify-between items-center pb-4 md:pb-6 border-b border-ink/5">
-                                <div class="w-16 md:w-24 h-4 md:h-5 bg-cream-dark rounded"></div>
-                                <div class="flex gap-3 md:gap-6">
-                                    <div class="w-8 md:w-12 h-2 bg-cream-dark rounded-full"></div>
-                                    <div class="w-8 md:w-12 h-2 bg-cream-dark rounded-full"></div>
-                                </div>
-                            </div>
-                            <div class="flex-1 flex flex-col md:flex-row gap-6 md:gap-16 items-center">
-                                <div class="flex-1 space-y-4 md:space-y-6 w-full">
-                                    <div class="space-y-2 md:space-y-3">
-                                        <div class="w-full h-7 md:h-10 bg-ink/5 rounded"></div>
-                                        <div class="w-4/5 h-7 md:h-10 bg-ink/5 rounded"></div>
-                                    </div>
-                                    <div class="space-y-2 pt-1 md:pt-2">
-                                        <div class="w-full h-2 bg-ink/5 rounded-full"></div>
-                                        <div class="w-5/6 h-2 bg-ink/5 rounded-full"></div>
-                                        <div class="w-4/6 h-2 bg-ink/5 rounded-full"></div>
-                                    </div>
-                                    <div class="pt-3 md:pt-6">
-                                        <div id="target-btn-1" class="w-32 md:w-40 h-10 md:h-12 bg-ink rounded-full flex items-center justify-center relative overflow-hidden transition-colors">
-                                            <div class="w-16 md:w-20 h-2 bg-white/50 rounded-full"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="flex-1 w-full h-32 md:h-full bg-cream rounded-xl border border-ink/5 flex items-center justify-center relative">
-                                    <div class="w-20 md:w-32 h-20 md:h-32 rounded-full border border-ink/10 flex items-center justify-center">
-                                        <div class="w-10 md:w-16 h-10 md:h-16 rounded-full bg-ink/5"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- State 2: AI Processing -->
-                    <div id="state-2" class="absolute inset-0 p-4 sm:p-8 md:p-12 lg:p-16 bg-[#FAFAFA] transition-all duration-[1200ms] ease-[cubic-bezier(0.16,1,0.3,1)] opacity-0 translate-y-8 pointer-events-none flex items-center justify-center" style="transform-origin:center bottom;">
-                        <div class="w-full max-w-2xl bg-white border border-ink/5 rounded-2xl p-6 sm:p-8 md:p-10 shadow-sm">
-                            <div class="mb-6 md:mb-8 pb-5 md:pb-6 border-b border-ink/5 flex items-center justify-between">
-                                <div>
-                                    <h4 class="font-serif text-lg md:text-xl text-ink">Workflow Orchestration</h4>
-                                    <p class="text-xs text-ink-light font-sans mt-1">Processing incoming request...</p>
-                                </div>
-                                <div class="w-8 h-8 rounded-full bg-cream flex items-center justify-center">
-                                    <i data-lucide="loader-2" class="w-4 h-4 text-ink-light animate-spin"></i>
-                                </div>
-                            </div>
-                            <div class="space-y-5 md:space-y-8 relative">
-                                <div class="absolute left-[15px] top-[10px] bottom-[10px] w-px bg-ink/5"></div>
-                                <div class="flex items-start gap-4 md:gap-6 relative log-item" id="log-1">
-                                    <div class="w-8 h-8 rounded-full bg-white flex items-center justify-center shrink-0 z-10 border border-ink/10">
-                                        <div class="w-2 h-2 rounded-full bg-ink/20 log-dot transition-colors duration-500"></div>
-                                    </div>
-                                    <div class="pt-1 w-full">
-                                        <span class="text-ink font-medium text-sm">Form Data Received</span>
-                                        <p class="text-ink-light text-xs mt-1.5 leading-relaxed bg-cream p-2.5 md:p-3 rounded-lg border border-ink/5">
-                                            Parsing client requirements: Industry <span class="font-medium text-ink">SaaS</span>, Budget <span class="font-medium text-ink">$15k+</span>
-                                        </p>
-                                    </div>
-                                </div>
-                                <div class="flex items-start gap-4 md:gap-6 relative log-item" id="log-2">
-                                    <div class="w-8 h-8 rounded-full bg-white flex items-center justify-center shrink-0 z-10 border border-ink/10">
-                                        <div class="w-2 h-2 rounded-full bg-ink/20 log-dot transition-colors duration-500"></div>
-                                    </div>
-                                    <div class="pt-1 w-full">
-                                        <span class="text-ink font-medium text-sm">Synthesizing Proposal</span>
-                                        <p class="text-ink-light text-xs mt-1.5 leading-relaxed bg-cream p-2.5 md:p-3 rounded-lg border border-ink/5">LLM drafting bespoke introduction and preliminary scope based on historical case studies.</p>
-                                    </div>
-                                </div>
-                                <div class="flex items-start gap-4 md:gap-6 relative log-item" id="log-3">
-                                    <div class="w-8 h-8 rounded-full bg-white flex items-center justify-center shrink-0 z-10 border border-ink/10">
-                                        <div class="w-2 h-2 rounded-full bg-ink/20 log-dot transition-colors duration-500"></div>
-                                    </div>
-                                    <div class="pt-1 w-full">
-                                        <span class="text-ink font-medium text-sm">Systems Updated</span>
-                                        <p class="text-ink-light text-xs mt-1.5 leading-relaxed">CRM pipeline updated to <span class="bg-cream px-2 py-1 rounded text-ink border border-ink/5">Qualified</span>. Notification sent to Slack.</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- State 3: Analytics Dashboard -->
-                    <div id="state-3" class="absolute inset-0 p-4 sm:p-6 md:p-10 lg:p-16 bg-[#FAFAFA] transition-all duration-[1200ms] ease-[cubic-bezier(0.16,1,0.3,1)] opacity-0 translate-y-8 pointer-events-none" style="transform-origin:center bottom;">
-                        <div class="w-full h-full flex flex-col max-w-4xl mx-auto">
-                            <div class="mb-5 md:mb-8 lg:mb-10 flex justify-between items-end pb-4 md:pb-6 border-b border-ink/5">
-                                <div>
-                                    <h3 class="text-xl md:text-2xl lg:text-3xl font-serif text-ink mb-1">Performance Overview</h3>
-                                    <p class="text-ink-light font-sans text-xs md:text-sm">Automated systems telemetry.</p>
-                                </div>
-                                <div class="flex items-center gap-2 text-xs font-medium text-ink/50 bg-white px-2.5 md:px-3 py-1 md:py-1.5 rounded-full border border-ink/5">
-                                    <div class="w-1.5 h-1.5 rounded-full bg-green-500"></div>
-                                    Operational
-                                </div>
-                            </div>
-                            <div class="grid grid-cols-3 gap-2 md:gap-4 lg:gap-6 mb-4 md:mb-6 lg:mb-8">
-                                <div class="bg-white border border-ink/5 p-3 sm:p-4 md:p-5 lg:p-6 rounded-xl md:rounded-2xl shadow-sm">
-                                    <div class="eyebrow text-ink-light mb-2 md:mb-4 text-[9px] md:text-[11px] lg:text-xs">Hours Recovered</div>
-                                    <div class="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-serif text-ink">124<span class="text-ink-light font-sans text-xs md:text-sm lg:text-lg font-normal">/mo</span></div>
-                                </div>
-                                <div class="bg-white border border-ink/5 p-3 sm:p-4 md:p-5 lg:p-6 rounded-xl md:rounded-2xl shadow-sm">
-                                    <div class="eyebrow text-ink-light mb-2 md:mb-4 text-[9px] md:text-[11px] lg:text-xs">Leads Qualified</div>
-                                    <div class="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-serif text-ink">8,402</div>
-                                </div>
-                                <div class="bg-white border border-ink/5 p-3 sm:p-4 md:p-5 lg:p-6 rounded-xl md:rounded-2xl shadow-sm">
-                                    <div class="eyebrow text-ink-light mb-2 md:mb-4 text-[9px] md:text-[11px] lg:text-xs">Avg. Latency</div>
-                                    <div class="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-serif text-accent">1.2s</div>
-                                </div>
-                            </div>
-                            <!-- Chart mockup -->
-                            <div class="flex-1 bg-white border border-ink/5 rounded-xl md:rounded-2xl p-4 md:p-6 lg:p-8 flex items-end justify-between gap-1.5 md:gap-3 shadow-sm relative group min-h-0">
-                                <div class="w-full bg-cream transition-all h-[20%] rounded-t-sm group-hover:bg-cream-dark"></div>
-                                <div class="w-full bg-cream transition-all h-[35%] rounded-t-sm group-hover:bg-cream-dark"></div>
-                                <div class="w-full bg-cream transition-all h-[25%] rounded-t-sm group-hover:bg-cream-dark"></div>
-                                <div class="w-full bg-cream-dark transition-all h-[50%] rounded-t-sm"></div>
-                                <div class="w-full bg-ink transition-all h-[70%] rounded-t-sm relative">
-                                    <div class="absolute -top-8 md:-top-10 left-1/2 -translate-x-1/2 bg-white border border-ink/5 shadow-sm text-ink text-[9px] md:text-[10px] py-1 md:py-1.5 px-2 md:px-3 rounded-full font-medium whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity">Optimization deployed</div>
-                                </div>
-                                <div class="w-full bg-ink/80 transition-all h-[85%] rounded-t-sm"></div>
-                                <div class="w-full bg-ink/60 transition-all h-[95%] rounded-t-sm"></div>
-                            </div>
-                            <!-- Restart button -->
-                            <div class="absolute bottom-4 md:bottom-8 right-4 md:right-8 z-20">
-                                <button id="target-btn-2" class="w-10 h-10 md:w-12 md:h-12 bg-white border border-ink/10 shadow-sm hover:border-ink/20 hover:shadow-md rounded-full flex items-center justify-center text-ink transition-all">
-                                    <i data-lucide="rotate-ccw" class="w-3.5 h-3.5 md:w-4 md:h-4"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Services / Expertise Section -->
-    <section id="services" class="py-20 md:py-32 relative bg-white border-t border-ink/5">
-        <div class="max-w-7xl mx-auto px-5 md:px-6">
-            <div class="mb-12 md:mb-20 reveal">
-                <div class="eyebrow text-accent mb-4">Expertise</div>
-                <h2 class="text-4xl sm:text-5xl md:text-6xl font-serif tracking-tight text-ink mb-6">Capabilities.</h2>
-                <div class="w-20 h-px bg-ink/20"></div>
-            </div>
-
-            <!-- Bento Grid -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
-
-                <!-- Web Design — wide -->
-                <div class="bento-card md:col-span-2 bg-white border border-ink/5 rounded-[1.5rem] md:rounded-[2rem] p-8 md:p-10 lg:p-12 reveal">
-                    <div class="w-11 h-11 md:w-12 md:h-12 rounded-full bg-cream flex items-center justify-center mb-6 md:mb-8 border border-ink/5">
-                        <i data-lucide="pen-tool" class="w-4.5 h-4.5 md:w-5 md:h-5 text-ink"></i>
-                    </div>
-                    <h3 class="text-xl md:text-2xl font-serif mb-3 md:mb-4 text-ink">Immersive Architecture</h3>
-                    <p class="text-ink-light leading-relaxed font-light text-sm md:text-base max-w-xl">
-                        We eschew templates in favor of bespoke, ground-up development. Every pixel is intentional. Every interaction is designed to evoke trust, authority, and seamless usability.
-                    </p>
-                </div>
-
-                <!-- AI Agents -->
-                <div class="bento-card bg-white border border-ink/5 rounded-[1.5rem] md:rounded-[2rem] p-8 md:p-10 lg:p-12 reveal" style="transition-delay:100ms;">
-                    <div class="w-11 h-11 md:w-12 md:h-12 rounded-full bg-cream flex items-center justify-center mb-6 md:mb-8 border border-ink/5">
-                        <i data-lucide="cpu" class="w-4.5 h-4.5 md:w-5 md:h-5 text-ink"></i>
-                    </div>
-                    <h3 class="text-lg md:text-xl font-serif mb-3 md:mb-4 text-ink">Autonomous Agents</h3>
-                    <p class="text-ink-light font-light leading-relaxed text-sm">
-                        Tailored LLM integrations that handle customer inquiries and internal logic securely and without human intervention.
-                    </p>
-                </div>
-
-                <!-- API Ecosystems -->
-                <div class="bento-card bg-white border border-ink/5 rounded-[1.5rem] md:rounded-[2rem] p-8 md:p-10 lg:p-12 reveal">
-                    <div class="w-11 h-11 md:w-12 md:h-12 rounded-full bg-cream flex items-center justify-center mb-6 md:mb-8 border border-ink/5">
-                        <i data-lucide="git-merge" class="w-4.5 h-4.5 md:w-5 md:h-5 text-ink"></i>
-                    </div>
-                    <h3 class="text-lg md:text-xl font-serif mb-3 md:mb-4 text-ink">API Ecosystems</h3>
-                    <p class="text-ink-light font-light leading-relaxed text-sm">
-                        Unifying fragmented toolsets. We weave your CRM, communication channels, and databases into one cohesive organism.
-                    </p>
-                </div>
-
-                <!-- Performance — wide -->
-                <div class="bento-card md:col-span-2 bg-white border border-ink/5 rounded-[1.5rem] md:rounded-[2rem] p-8 md:p-10 lg:p-12 reveal flex flex-col sm:flex-row gap-8 md:gap-10 items-start sm:items-center" style="transition-delay:100ms;">
-                    <div class="flex-1">
-                        <div class="w-11 h-11 md:w-12 md:h-12 rounded-full bg-cream flex items-center justify-center mb-6 md:mb-8 border border-ink/5">
-                            <i data-lucide="zap" class="w-4.5 h-4.5 md:w-5 md:h-5 text-ink"></i>
-                        </div>
-                        <h3 class="text-xl md:text-2xl font-serif mb-3 md:mb-4 text-ink">Ruthless Optimization</h3>
-                        <p class="text-ink-light font-light leading-relaxed text-sm md:text-base max-w-md">
-                            Speed is a design feature. We engineer for sub-second load times and flawless technical SEO, ensuring your digital presence is as performant as it is beautiful.
-                        </p>
-                    </div>
-                    <div class="w-36 h-36 sm:w-44 sm:h-44 md:w-48 md:h-48 bg-cream rounded-full border border-ink/5 flex items-center justify-center flex-col shrink-0 self-center">
-                        <div class="text-3xl md:text-4xl font-serif text-ink">100</div>
-                        <div class="eyebrow text-ink/40 mt-2">Score</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer CTA — Dark -->
-    <section class="py-24 md:py-40 relative bg-ink text-cream selection:bg-cream selection:text-ink overflow-hidden">
-        <div class="absolute inset-0 opacity-[0.02]"
-            style="background-image:radial-gradient(circle at 2px 2px, white 1px, transparent 0);background-size:32px 32px;"></div>
-        <div class="max-w-4xl mx-auto px-5 md:px-6 text-center relative z-10 reveal">
-            <h2 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-serif tracking-tight mb-6 md:mb-8 text-white">Scale gracefully.</h2>
-            <p class="text-cream/70 text-base md:text-lg lg:text-xl mb-10 md:mb-12 max-w-2xl mx-auto font-light leading-relaxed">
-                Let us build a digital presence that reflects your brand's true value, while automating the operational friction behind the scenes.
-            </p>
-            <button class="bg-white text-ink px-8 md:px-10 py-4 md:py-5 rounded-full font-medium text-base md:text-lg hover:bg-cream-dark transition-colors inline-flex items-center gap-3 group">
-                Start your project
-                <i data-lucide="arrow-right" class="w-4 h-4 md:w-5 md:h-5 group-hover:translate-x-1 transition-transform"></i>
+        <div class="flex items-center gap-3">
+            <button class="bg-ink text-cream rounded-full font-medium hover:bg-ink-light transition-colors whitespace-nowrap" style="padding:clamp(7px,1.5vw,10px) clamp(14px,3vw,22px); font-size:clamp(10px,2vw,13px);">
+                Start a project
+            </button>
+            <button id="hamburger" class="md:hidden flex flex-col items-end justify-center gap-[5px] w-8 h-8 shrink-0" aria-label="Menu">
+                <span class="ham block h-px bg-ink transition-all duration-300" style="width:20px;"></span>
+                <span class="ham block h-px bg-ink transition-all duration-300" style="width:20px;"></span>
+                <span class="ham block h-px bg-ink transition-all duration-300" style="width:13px;"></span>
             </button>
         </div>
-    </section>
+    </div>
+    <div id="mobile-menu" class="closed md:hidden absolute top-full left-0 w-full bg-cream/96 backdrop-blur-md border-b border-ink/10 shadow-lg">
+        <div class="flex flex-col px-5 py-4">
+            <a href="#work"     class="mob-link text-[11px] font-semibold uppercase tracking-widest text-ink-light hover:text-ink transition-colors py-3.5 border-b border-ink/5">Selected Works</a>
+            <a href="#services" class="mob-link text-[11px] font-semibold uppercase tracking-widest text-ink-light hover:text-ink transition-colors py-3.5 border-b border-ink/5">Expertise</a>
+            <a href="#workflow" class="mob-link text-[11px] font-semibold uppercase tracking-widest text-ink-light hover:text-ink transition-colors py-3.5">The Platform</a>
+        </div>
+    </div>
+</nav>
 
-    <!-- Footer -->
-    <footer class="bg-ink py-12 md:py-16 border-t border-white/5 text-cream">
-        <div class="max-w-7xl mx-auto px-5 md:px-6 flex flex-col md:flex-row items-center justify-between gap-6 md:gap-8 text-center md:text-left">
-            <div class="flex items-center gap-3 font-serif text-lg md:text-xl tracking-tight text-white">
-                <div class="w-7 h-7 md:w-8 md:h-8 rounded-full border border-white/20 flex items-center justify-center">
-                    <i data-lucide="infinity" class="w-3.5 h-3.5 md:w-4 md:h-4 text-white"></i>
+<!-- ═══════ HERO ═══════ -->
+<section class="relative min-h-screen flex items-center justify-center" style="padding-top:clamp(5.5rem,14vw,9rem); padding-bottom:clamp(3rem,8vw,5rem);">
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80vw] max-w-[700px] aspect-square bg-white/40 rounded-full blur-[100px] -z-10 pointer-events-none"></div>
+    <div class="w-full max-w-5xl mx-auto text-center z-10" style="padding:0 clamp(1rem,4vw,1.5rem);">
+        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-ink/10 bg-white/60 shadow-sm backdrop-blur-sm text-ink mb-8 animate-fade-in-up eyebrow" style="animation-delay:.1s;">
+            <i data-lucide="sparkles" class="w-3 h-3 text-accent shrink-0"></i>
+            <span class="pt-px">Next-Generation Architecture</span>
+        </div>
+        <h1 class="font-serif text-ink leading-[1.05] mb-6 animate-fade-in-up tracking-tight" style="font-size:clamp(2rem,8.5vw,7rem); animation-delay:.2s;">
+            Digital excellence.<br>
+            <span class="italic text-ink-light font-light">Automated precision.</span>
+        </h1>
+        <p class="text-ink-light mb-10 max-w-2xl mx-auto font-light leading-relaxed animate-fade-in-up" style="font-size:clamp(.95rem,2.5vw,1.25rem); animation-delay:.3s;">
+            We design high-performance web interfaces seamlessly integrated with autonomous AI workflows. Engineered for ambitious brands ready to scale without friction.
+        </p>
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-3 animate-fade-in-up" style="animation-delay:.4s;">
+            <button class="w-full sm:w-auto bg-ink text-cream rounded-full font-medium hover:bg-ink-light hover:shadow-lg transition-all duration-300 flex items-center justify-center gap-3 group" style="padding:clamp(12px,2vw,15px) clamp(24px,4vw,32px); font-size:clamp(12px,2vw,14px);">
+                <span>Initiate a project</span>
+                <div class="w-6 h-6 rounded-full bg-cream/20 flex items-center justify-center group-hover:translate-x-1 transition-transform">
+                    <i data-lucide="arrow-right" class="w-3.5 h-3.5 text-cream"></i>
                 </div>
-                Synflow
-            </div>
-            <div class="text-cream/50 text-xs md:text-sm font-light">&copy; 2026 Synflow Studio. All rights reserved.</div>
-            <div class="flex gap-6 md:gap-8">
-                <a href="#" class="text-cream/50 hover:text-white transition-colors"><span class="eyebrow">Twitter</span></a>
-                <a href="#" class="text-cream/50 hover:text-white transition-colors"><span class="eyebrow">LinkedIn</span></a>
-                <a href="#" class="text-cream/50 hover:text-white transition-colors"><span class="eyebrow">Dribbble</span></a>
+            </button>
+            <button class="w-full sm:w-auto bg-white/50 border border-ink/10 text-ink rounded-full font-medium hover:bg-white hover:border-ink/30 hover:shadow-sm transition-all duration-300 flex items-center justify-center gap-2.5 group" style="padding:clamp(12px,2vw,15px) clamp(24px,4vw,32px); font-size:clamp(12px,2vw,14px);">
+                <i data-lucide="compass" class="w-4 h-4 text-ink/50 group-hover:text-ink transition-colors shrink-0"></i>
+                <span>Explore capabilities</span>
+            </button>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════ WORKS ═══════ -->
+<section id="work" class="bg-white border-t border-ink/5" style="padding:clamp(3rem,8vw,6rem) 0;">
+    <div class="max-w-7xl mx-auto" style="padding-left:clamp(1rem,4vw,1.5rem); padding-right:clamp(1rem,4vw,1.5rem);">
+
+        <div class="mb-10 md:mb-14 reveal">
+            <div class="eyebrow text-accent mb-3">Selected Works</div>
+            <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
+                <h2 class="font-serif tracking-tight text-ink" style="font-size:clamp(1.75rem,5.5vw,3.25rem);">Digital spaces we've<br class="sm:hidden"> engineered.</h2>
+                <p class="text-ink-light text-sm font-light leading-relaxed hidden sm:block" style="max-width:220px;">Live deployments of our recent architectures.</p>
             </div>
         </div>
-    </footer>
 
-    <script>
+        <!-- Snap scroll on mobile / grid on desktop -->
+        <div class="works-track reveal">
+
+            <!-- ─ Card 1: Rit Yatra ─ -->
+            <div class="work-card group rounded-2xl border border-ink/8 bg-cream-dark shadow-sm overflow-hidden">
+                <div class="card-chrome">
+                    <div class="chrome-dots"><div class="chrome-dot"></div><div class="chrome-dot"></div><div class="chrome-dot"></div></div>
+                    <div class="chrome-url"><i data-lucide="lock" style="width:9px;height:9px;opacity:.45;flex-shrink:0;"></i>rityatra.in</div>
+                    <a href="https://www.rityatra.in/" target="_blank" rel="noopener noreferrer" class="ml-auto z-10 text-ink/30 hover:text-ink transition-colors"><i data-lucide="external-link" style="width:13px;height:13px;"></i></a>
+                </div>
+                <div class="card-viewport">
+                    <!-- Mobile: CSS mockup -->
+                    <div class="card-mockup">
+                    <div class="p-rityatra">
+                        <div class="m-nav p-rityatra nav">
+                            <div class="m-line" style="width:52px;height:9px;background:linear-gradient(90deg,#C25E3E,#8B4513);opacity:.75;"></div>
+                            <div style="margin-left:auto;display:flex;gap:8px;">
+                                <div class="m-line" style="width:24px;height:4px;background:#8B6A50;opacity:.35;"></div>
+                                <div class="m-line" style="width:24px;height:4px;background:#8B6A50;opacity:.35;"></div>
+                                <div class="m-line" style="width:24px;height:4px;background:#8B6A50;opacity:.35;"></div>
+                            </div>
+                        </div>
+                        <div class="p-rityatra body">
+                            <div style="display:flex;align-items:center;gap:6px;">
+                                <div class="m-chip" style="height:16px;width:72px;border:1px solid rgba(194,94,62,.35);display:flex;align-items:center;padding:0 8px;">
+                                    <div class="m-line" style="width:50px;height:4px;background:#C25E3E;opacity:.6;"></div>
+                                </div>
+                            </div>
+                            <div class="m-line" style="width:70%;height:16px;background:linear-gradient(90deg,#7A4A2E,#C25E3E);opacity:.72;"></div>
+                            <div class="m-line" style="width:55%;height:12px;background:#8B6A50;opacity:.38;"></div>
+                            <div style="display:flex;flex-direction:column;gap:4px;">
+                                <div class="m-line" style="width:88%;height:4px;background:#8B6A50;opacity:.22;"></div>
+                                <div class="m-line" style="width:70%;height:4px;background:#8B6A50;opacity:.18;"></div>
+                            </div>
+                            <div class="p-rityatra search">
+                                <div class="p-rityatra s-icon"></div>
+                                <div class="p-rityatra s-text"></div>
+                                <div class="p-rityatra s-btn"></div>
+                            </div>
+                            <div class="p-rityatra chips">
+                                <div class="m-chip p-rityatra ch-on"></div>
+                                <div class="m-chip p-rityatra ch-off"></div>
+                                <div class="m-chip p-rityatra ch-off"></div>
+                                <div class="m-chip p-rityatra ch-off"></div>
+                            </div>
+                            <div class="p-rityatra cards">
+                                <div class="p-rityatra dc" style="background:linear-gradient(135deg,#D4956A,#8B4513);"><div class="p-rityatra dc-lbl"></div></div>
+                                <div class="p-rityatra dc" style="background:linear-gradient(135deg,#C4A882,#7A5C3A);"><div class="p-rityatra dc-lbl"></div></div>
+                                <div class="p-rityatra dc" style="background:linear-gradient(135deg,#E8B89A,#A0522D);"><div class="p-rityatra dc-lbl"></div></div>
+                            </div>
+                        </div>
+                    </div>
+                    </div><!-- /card-mockup -->
+                    <!-- Desktop: live iframe -->
+                    <div class="card-iframe-wrap">
+                        <iframe data-src="https://www.rityatra.in/" tabindex="-1" aria-hidden="true"></iframe>
+                        <div class="sim-cursor-work"><svg width="22" height="22" viewBox="0 0 24 24" fill="#1C1917" stroke="white" stroke-width="2"><path d="M5.5 3 L5.5 20 L9.5 16 L13.5 23 L16.5 21.5 L12.5 14.5 L19 14.5 Z" stroke-linejoin="round"></path></svg></div>
+                    </div>
+                    <div class="card-overlay">
+                        <a href="https://www.rityatra.in/" target="_blank" rel="noopener noreferrer" class="overlay-cta">View Live <i data-lucide="arrow-up-right" style="width:13px;height:13px;"></i></a>
+                    </div>
+                </div>
+                <div class="flex justify-between items-center p-4 md:p-5">
+                    <div>
+                        <h3 class="font-serif text-ink group-hover:text-accent transition-colors" style="font-size:clamp(1.15rem,2.5vw,1.5rem);">Rit Yatra</h3>
+                        <p class="text-[11px] text-ink-light font-light mt-0.5">Custom Travel & Booking Architecture</p>
+                    </div>
+                    <span class="text-[9px] text-ink font-mono uppercase tracking-widest border border-ink/10 bg-cream px-2.5 py-1 rounded-full shrink-0">Live</span>
+                </div>
+            </div>
+
+            <!-- ─ Card 2: RMCHRI ─ -->
+            <div class="work-card group rounded-2xl border border-ink/8 bg-cream-dark shadow-sm overflow-hidden">
+                <div class="card-chrome">
+                    <div class="chrome-dots"><div class="chrome-dot"></div><div class="chrome-dot"></div><div class="chrome-dot"></div></div>
+                    <div class="chrome-url"><i data-lucide="lock" style="width:9px;height:9px;opacity:.45;flex-shrink:0;"></i>rmchri.in</div>
+                    <a href="https://rmchri.in/" target="_blank" rel="noopener noreferrer" class="ml-auto z-10 text-ink/30 hover:text-ink transition-colors"><i data-lucide="external-link" style="width:13px;height:13px;"></i></a>
+                </div>
+                <div class="card-viewport">
+                    <!-- Mobile: CSS mockup -->
+                    <div class="card-mockup">
+                    <div class="p-rmchri">
+                        <div class="m-nav p-rmchri nav">
+                            <div class="m-line" style="width:56px;height:9px;background:#fff;opacity:.88;"></div>
+                            <div style="margin-left:auto;display:flex;gap:7px;">
+                                <div class="m-line" style="width:22px;height:4px;background:#fff;opacity:.28;"></div>
+                                <div class="m-line" style="width:22px;height:4px;background:#fff;opacity:.28;"></div>
+                                <div class="m-line" style="width:22px;height:4px;background:#fff;opacity:.28;"></div>
+                            </div>
+                            <div class="m-line" style="width:36px;height:18px;background:rgba(255,255,255,.18);border-radius:4px;margin-left:8px;"></div>
+                        </div>
+                        <div class="p-rmchri hero">
+                            <div style="width:70px;height:11px;border:1px solid rgba(255,255,255,.3);border-radius:20px;"></div>
+                            <div class="m-line" style="width:65%;height:15px;background:#fff;opacity:.9;"></div>
+                            <div class="m-line" style="width:50%;height:11px;background:#90c4e8;opacity:.7;"></div>
+                            <div class="m-line" style="width:80%;height:4px;background:#90c4e8;opacity:.38;margin-top:2px;"></div>
+                            <div style="display:flex;gap:7px;margin-top:3px;">
+                                <div class="m-line" style="width:52px;height:21px;background:#fff;border-radius:5px;"></div>
+                                <div class="m-line" style="width:52px;height:21px;border:1px solid rgba(255,255,255,.4);border-radius:5px;"></div>
+                            </div>
+                        </div>
+                        <div class="p-rmchri stats">
+                            <div class="p-rmchri stat"><div class="m-line" style="width:34px;height:11px;background:#1a3a5c;opacity:.78;"></div><div class="m-line" style="width:44px;height:4px;background:#94a3b8;margin-top:3px;"></div></div>
+                            <div class="p-rmchri stat"><div class="m-line" style="width:28px;height:11px;background:#1a3a5c;opacity:.78;"></div><div class="m-line" style="width:36px;height:4px;background:#94a3b8;margin-top:3px;"></div></div>
+                            <div class="p-rmchri stat"><div class="m-line" style="width:38px;height:11px;background:#1a3a5c;opacity:.78;"></div><div class="m-line" style="width:40px;height:4px;background:#94a3b8;margin-top:3px;"></div></div>
+                        </div>
+                        <div class="p-rmchri main">
+                            <div class="p-rmchri sidebar">
+                                <div class="p-rmchri sb-item"><div class="m-dot" style="width:5px;height:5px;background:#2563a8;flex-shrink:0;"></div><div class="m-line" style="flex:1;height:4px;background:#94a3b8;opacity:.6;"></div></div>
+                                <div class="p-rmchri sb-item"><div class="m-dot" style="width:5px;height:5px;background:#94a3b8;flex-shrink:0;"></div><div class="m-line" style="flex:1;height:4px;background:#94a3b8;opacity:.6;"></div></div>
+                                <div class="p-rmchri sb-item"><div class="m-dot" style="width:5px;height:5px;background:#94a3b8;flex-shrink:0;"></div><div class="m-line" style="flex:1;height:4px;background:#94a3b8;opacity:.6;"></div></div>
+                                <div class="p-rmchri sb-item"><div class="m-dot" style="width:5px;height:5px;background:#94a3b8;flex-shrink:0;"></div><div class="m-line" style="flex:1;height:4px;background:#94a3b8;opacity:.6;"></div></div>
+                            </div>
+                            <div class="p-rmchri content">
+                                <div class="p-rmchri c-block" style="height:18px;background:#f0f4f8;border:none;"></div>
+                                <div class="p-rmchri c-block" style="height:28px;"></div>
+                                <div class="p-rmchri c-block" style="height:22px;"></div>
+                                <div class="p-rmchri c-block" style="height:22px;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    </div><!-- /card-mockup -->
+                    <!-- Desktop: live iframe -->
+                    <div class="card-iframe-wrap">
+                        <iframe data-src="https://rmchri.in/" tabindex="-1" aria-hidden="true"></iframe>
+                        <div class="sim-cursor-work"><svg width="22" height="22" viewBox="0 0 24 24" fill="#1C1917" stroke="white" stroke-width="2"><path d="M5.5 3 L5.5 20 L9.5 16 L13.5 23 L16.5 21.5 L12.5 14.5 L19 14.5 Z" stroke-linejoin="round"></path></svg></div>
+                    </div>
+                    <div class="card-overlay">
+                        <a href="https://rmchri.in/" target="_blank" rel="noopener noreferrer" class="overlay-cta">View Live <i data-lucide="arrow-up-right" style="width:13px;height:13px;"></i></a>
+                    </div>
+                </div>
+                <div class="flex justify-between items-center p-4 md:p-5">
+                    <div>
+                        <h3 class="font-serif text-ink group-hover:text-accent transition-colors" style="font-size:clamp(1.15rem,2.5vw,1.5rem);">RMCHRI</h3>
+                        <p class="text-[11px] text-ink-light font-light mt-0.5">Medical Institution Platform</p>
+                    </div>
+                    <span class="text-[9px] text-ink font-mono uppercase tracking-widest border border-ink/10 bg-cream px-2.5 py-1 rounded-full shrink-0">Live</span>
+                </div>
+            </div>
+
+            <!-- ─ Card 3: Cake House ─ -->
+            <div class="work-card group rounded-2xl border border-ink/8 bg-cream-dark shadow-sm overflow-hidden">
+                <div class="card-chrome">
+                    <div class="chrome-dots"><div class="chrome-dot"></div><div class="chrome-dot"></div><div class="chrome-dot"></div></div>
+                    <div class="chrome-url"><i data-lucide="lock" style="width:9px;height:9px;opacity:.45;flex-shrink:0;"></i>cake-house-ten.vercel.app</div>
+                    <a href="https://cake-house-ten.vercel.app/" target="_blank" rel="noopener noreferrer" class="ml-auto z-10 text-ink/30 hover:text-ink transition-colors"><i data-lucide="external-link" style="width:13px;height:13px;"></i></a>
+                </div>
+                <div class="card-viewport">
+                    <!-- Mobile: CSS mockup -->
+                    <div class="card-mockup">
+                    <div class="p-cake">
+                        <div class="m-nav p-cake nav">
+                            <div class="m-line" style="width:50px;height:9px;background:#8B4513;border-radius:20px;opacity:.7;"></div>
+                            <div style="margin-left:auto;display:flex;gap:7px;align-items:center;">
+                                <div class="m-line" style="width:24px;height:4px;background:#C4A882;opacity:.5;"></div>
+                                <div class="m-line" style="width:24px;height:4px;background:#C4A882;opacity:.5;"></div>
+                                <div class="m-line" style="width:24px;height:4px;background:#C4A882;opacity:.5;"></div>
+                                <div style="width:15px;height:15px;border:2px solid #8B4513;border-radius:3px;opacity:.5;"></div>
+                            </div>
+                        </div>
+                        <div class="p-cake hero-strip">
+                            <div class="p-cake ht">
+                                <div class="m-line" style="width:68px;height:12px;background:linear-gradient(90deg,#8B4513,#C4814A);border-radius:20px;opacity:.75;"></div>
+                                <div class="m-line" style="width:58%;height:17px;background:#5C2D0A;opacity:.65;"></div>
+                                <div class="m-line" style="width:80%;height:4px;background:#8B6A50;opacity:.32;"></div>
+                                <div class="m-line" style="width:65%;height:4px;background:#8B6A50;opacity:.22;"></div>
+                                <div class="m-chip" style="margin-top:6px;width:60px;height:22px;background:#8B4513;opacity:.8;"></div>
+                            </div>
+                            <div class="p-cake hi"><div class="p-cake hi-shine"></div></div>
+                        </div>
+                        <div class="p-cake grid">
+                            <div class="p-cake gl"></div>
+                            <div class="p-cake products">
+                                <div class="p-cake pc"><div class="p-cake pi" style="background:linear-gradient(145deg,#F0C8A0,#D4956A);"></div><div class="p-cake pm"><div class="p-cake pn"></div><div class="p-cake pp"></div></div></div>
+                                <div class="p-cake pc"><div class="p-cake pi" style="background:linear-gradient(145deg,#E8B8D0,#C49080);"></div><div class="p-cake pm"><div class="p-cake pn"></div><div class="p-cake pp"></div></div></div>
+                                <div class="p-cake pc"><div class="p-cake pi" style="background:linear-gradient(145deg,#F0D8B0,#C4A870);"></div><div class="p-cake pm"><div class="p-cake pn"></div><div class="p-cake pp"></div></div></div>
+                            </div>
+                        </div>
+                    </div>
+                    </div><!-- /card-mockup -->
+                    <!-- Desktop: live iframe -->
+                    <div class="card-iframe-wrap">
+                        <iframe data-src="https://cake-house-ten.vercel.app/" tabindex="-1" aria-hidden="true"></iframe>
+                        <div class="sim-cursor-work"><svg width="22" height="22" viewBox="0 0 24 24" fill="#1C1917" stroke="white" stroke-width="2"><path d="M5.5 3 L5.5 20 L9.5 16 L13.5 23 L16.5 21.5 L12.5 14.5 L19 14.5 Z" stroke-linejoin="round"></path></svg></div>
+                    </div>
+                    <div class="card-overlay">
+                        <a href="https://cake-house-ten.vercel.app/" target="_blank" rel="noopener noreferrer" class="overlay-cta">View Live <i data-lucide="arrow-up-right" style="width:13px;height:13px;"></i></a>
+                    </div>
+                </div>
+                <div class="flex justify-between items-center p-4 md:p-5">
+                    <div>
+                        <h3 class="font-serif text-ink group-hover:text-accent transition-colors" style="font-size:clamp(1.15rem,2.5vw,1.5rem);">Cake House</h3>
+                        <p class="text-[11px] text-ink-light font-light mt-0.5">E-commerce / Bakery Frontend</p>
+                    </div>
+                    <span class="text-[9px] text-ink font-mono uppercase tracking-widest border border-ink/10 bg-cream px-2.5 py-1 rounded-full shrink-0">Live</span>
+                </div>
+            </div>
+
+            <!-- ─ Card 4: Anto Merary ─ -->
+            <div class="work-card group rounded-2xl border border-ink/8 bg-cream-dark shadow-sm overflow-hidden">
+                <div class="card-chrome">
+                    <div class="chrome-dots"><div class="chrome-dot"></div><div class="chrome-dot"></div><div class="chrome-dot"></div></div>
+                    <div class="chrome-url"><i data-lucide="lock" style="width:9px;height:9px;opacity:.45;flex-shrink:0;"></i>anto-merary.vercel.app</div>
+                    <a href="https://anto-merary-s-portfolio.vercel.app/" target="_blank" rel="noopener noreferrer" class="ml-auto z-10 text-ink/30 hover:text-ink transition-colors"><i data-lucide="external-link" style="width:13px;height:13px;"></i></a>
+                </div>
+                <div class="card-viewport">
+                    <!-- Mobile: CSS mockup -->
+                    <div class="card-mockup">
+                    <div class="p-anto">
+                        <div class="m-nav p-anto nav">
+                            <div class="m-line" style="width:46px;height:9px;background:#fff;opacity:.88;"></div>
+                            <div style="margin-left:auto;display:flex;gap:7px;">
+                                <div class="m-line" style="width:22px;height:4px;background:#fff;opacity:.22;"></div>
+                                <div class="m-line" style="width:22px;height:4px;background:#fff;opacity:.22;"></div>
+                                <div class="m-line" style="width:22px;height:4px;background:#fff;opacity:.22;"></div>
+                            </div>
+                            <div style="width:38px;height:17px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:20px;margin-left:8px;"></div>
+                        </div>
+                        <div class="p-anto body">
+                            <div class="p-anto top">
+                                <div class="p-anto ey">
+                                    <div class="m-dot" style="width:5px;height:5px;background:#C25E3E;flex-shrink:0;"></div>
+                                    <div class="m-line" style="width:50px;height:4px;background:rgba(255,255,255,.3);"></div>
+                                </div>
+                                <div style="display:flex;flex-direction:column;gap:5px;">
+                                    <div class="m-line" style="width:72%;height:20px;background:linear-gradient(90deg,#fff,rgba(255,255,255,.6));"></div>
+                                    <div class="m-line" style="width:55%;height:20px;background:linear-gradient(90deg,rgba(194,94,62,.9),rgba(194,94,62,.38));"></div>
+                                </div>
+                                <div style="display:flex;flex-direction:column;gap:4px;margin-top:2px;">
+                                    <div class="m-line" style="width:75%;height:4px;background:rgba(255,255,255,.18);"></div>
+                                    <div class="m-line" style="width:60%;height:4px;background:rgba(255,255,255,.12);"></div>
+                                </div>
+                                <div style="display:flex;gap:7px;margin-top:6px;">
+                                    <div style="width:56px;height:23px;background:#fff;border-radius:20px;"></div>
+                                    <div style="width:56px;height:23px;border:1px solid rgba(255,255,255,.2);border-radius:20px;"></div>
+                                </div>
+                            </div>
+                            <div class="p-anto grids">
+                                <div class="p-anto grow">
+                                    <div class="p-anto th" style="height:54px;background:linear-gradient(135deg,#2a2a3e,#4a3060);"><div class="p-anto tl"></div></div>
+                                    <div class="p-anto th" style="height:54px;background:linear-gradient(135deg,#1e3040,#2a5070);"><div class="p-anto tl"></div></div>
+                                    <div class="p-anto th" style="height:54px;background:linear-gradient(135deg,#3e2a1e,#7a4030);"><div class="p-anto tl"></div></div>
+                                </div>
+                                <div class="p-anto grow">
+                                    <div class="p-anto th" style="height:40px;background:linear-gradient(135deg,#1a3a2a,#2a6040);"><div class="p-anto tl"></div></div>
+                                    <div class="p-anto th" style="height:40px;background:linear-gradient(135deg,#2a1a3a,#4a2060);"><div class="p-anto tl"></div></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    </div><!-- /card-mockup -->
+                    <!-- Desktop: live iframe -->
+                    <div class="card-iframe-wrap">
+                        <iframe data-src="https://anto-merary-s-portfolio.vercel.app/" tabindex="-1" aria-hidden="true"></iframe>
+                        <div class="sim-cursor-work"><svg width="22" height="22" viewBox="0 0 24 24" fill="#1C1917" stroke="white" stroke-width="2"><path d="M5.5 3 L5.5 20 L9.5 16 L13.5 23 L16.5 21.5 L12.5 14.5 L19 14.5 Z" stroke-linejoin="round"></path></svg></div>
+                    </div>
+                    <div class="card-overlay">
+                        <a href="https://anto-merary-s-portfolio.vercel.app/" target="_blank" rel="noopener noreferrer" class="overlay-cta">View Live <i data-lucide="arrow-up-right" style="width:13px;height:13px;"></i></a>
+                    </div>
+                </div>
+                <div class="flex justify-between items-center p-4 md:p-5">
+                    <div>
+                        <h3 class="font-serif text-ink group-hover:text-accent transition-colors" style="font-size:clamp(1.15rem,2.5vw,1.5rem);">Anto Merary</h3>
+                        <p class="text-[11px] text-ink-light font-light mt-0.5">Creative Personal Portfolio</p>
+                    </div>
+                    <span class="text-[9px] text-ink font-mono uppercase tracking-widest border border-ink/10 bg-cream px-2.5 py-1 rounded-full shrink-0">Live</span>
+                </div>
+            </div>
+
+        </div><!-- /works-track -->
+
+        <!-- Dot indicators (mobile only) -->
+        <div id="carousel-dots" class="flex items-center justify-center gap-2 mt-5 md:hidden">
+            <div class="dot active"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+        </div>
+
+    </div>
+</section>
+
+<!-- ═══════ PLATFORM ═══════ -->
+<section id="workflow" class="bg-cream border-t border-ink/5" style="padding:clamp(3rem,8vw,6rem) 0;">
+    <div class="max-w-7xl mx-auto" style="padding-left:clamp(1rem,4vw,1.5rem); padding-right:clamp(1rem,4vw,1.5rem);">
+        <div class="text-center mb-10 md:mb-16 reveal">
+            <div class="eyebrow text-accent mb-3">The Platform</div>
+            <h2 class="font-serif tracking-tight text-ink mb-4" style="font-size:clamp(1.75rem,5.5vw,3.25rem);">Intelligence by design.</h2>
+            <p class="text-ink-light max-w-xl mx-auto font-light leading-relaxed" style="font-size:clamp(.875rem,2vw,1.1rem);">Observe how a crafted frontend seamlessly triggers complex backend orchestration without a single line of visible code.</p>
+        </div>
+        <div class="relative w-full max-w-5xl mx-auto rounded-2xl border border-ink/10 bg-cream-dark shadow-[0_20px_60px_-15px_rgba(0,0,0,0.05)] overflow-hidden reveal">
+            <div class="bg-white border-b border-ink/5 flex items-center px-4 gap-2 relative" style="height:clamp(38px,5vw,48px);">
+                <div class="flex gap-1.5 z-10">
+                    <div class="w-2.5 h-2.5 rounded-full bg-[#E5E5E5] border border-[#D4D4D4]"></div>
+                    <div class="w-2.5 h-2.5 rounded-full bg-[#E5E5E5] border border-[#D4D4D4]"></div>
+                    <div class="w-2.5 h-2.5 rounded-full bg-[#E5E5E5] border border-[#D4D4D4]"></div>
+                </div>
+                <div class="absolute left-1/2 -translate-x-1/2 bg-cream rounded-md flex items-center justify-center gap-1.5 text-[10px] text-ink-light font-sans" style="height:26px;width:clamp(140px,35vw,280px);">
+                    <i data-lucide="lock" style="width:10px;height:10px;opacity:.5;flex-shrink:0;"></i> workspace.synflow.studio
+                </div>
+            </div>
+            <div class="relative overflow-hidden bg-[#FAFAFA]" style="height:clamp(320px,55vw,650px);" id="preview-container">
+                <!-- Sim cursor -->
+                <div id="sim-cursor" class="absolute z-50 preview-cursor pointer-events-none" style="top:80%;left:80%;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="#1C1917" stroke="white" stroke-width="2" class="drop-shadow-md">
+                        <path d="M3 3l7.07 16.97 2.51-7.39 7.39-2.51L3 3z"></path>
+                    </svg>
+                    <div id="cursor-ripple" class="absolute w-10 h-10 rounded-full scale-0 pointer-events-none" style="top:-20px;left:-20px;"></div>
+                </div>
+                <!-- State 1 -->
+                <div id="state-1" class="absolute inset-0 transition-all duration-[1200ms] ease-[cubic-bezier(0.16,1,0.3,1)]" style="padding:clamp(10px,4vw,60px);">
+                    <div class="w-full h-full flex flex-col max-w-4xl mx-auto bg-white rounded-2xl border border-ink/5 shadow-sm overflow-hidden" style="padding:clamp(12px,3vw,40px); gap:clamp(12px,3vw,32px);">
+                        <div class="flex justify-between items-center pb-3 border-b border-ink/5">
+                            <div class="m-line bg-cream-dark rounded" style="width:clamp(40px,8vw,80px);height:clamp(12px,2.5vw,18px);"></div>
+                            <div style="display:flex;gap:clamp(8px,2vw,20px);">
+                                <div class="m-line bg-cream-dark rounded-full" style="width:clamp(24px,5vw,44px);height:8px;"></div>
+                                <div class="m-line bg-cream-dark rounded-full" style="width:clamp(24px,5vw,44px);height:8px;"></div>
+                            </div>
+                        </div>
+                        <div class="flex-1 flex flex-col md:flex-row gap-6 md:gap-12 items-center min-h-0">
+                            <div class="flex-1 w-full" style="display:flex;flex-direction:column;gap:clamp(8px,2vw,18px);">
+                                <div style="display:flex;flex-direction:column;gap:6px;">
+                                    <div class="bg-ink/5 rounded" style="width:100%;height:clamp(20px,4vw,36px);"></div>
+                                    <div class="bg-ink/5 rounded" style="width:80%;height:clamp(20px,4vw,36px);"></div>
+                                </div>
+                                <div style="display:flex;flex-direction:column;gap:5px;">
+                                    <div class="bg-ink/5 rounded-full" style="width:100%;height:7px;"></div>
+                                    <div class="bg-ink/5 rounded-full" style="width:83%;height:7px;"></div>
+                                    <div class="bg-ink/5 rounded-full" style="width:66%;height:7px;"></div>
+                                </div>
+                                <div id="target-btn-1" class="bg-ink rounded-full flex items-center justify-center transition-colors overflow-hidden" style="width:clamp(100px,20vw,140px);height:clamp(32px,4vw,44px);">
+                                    <div class="bg-white/50 rounded-full" style="width:60%;height:7px;"></div>
+                                </div>
+                            </div>
+                            <div class="flex-1 w-full bg-cream rounded-xl border border-ink/5 flex items-center justify-center" style="height:clamp(50px,12vw,160px);">
+                                <div class="rounded-full border border-ink/10 flex items-center justify-center" style="width:clamp(40px,8vw,80px);height:clamp(40px,8vw,80px);">
+                                    <div class="rounded-full bg-ink/5" style="width:50%;height:50%;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- State 2 -->
+                <div id="state-2" class="absolute inset-0 bg-[#FAFAFA] opacity-0 pointer-events-none flex items-center justify-center transition-all duration-[1200ms] ease-[cubic-bezier(0.16,1,0.3,1)]" style="transform:translateY(20px);padding:clamp(10px,4vw,60px);">
+                    <div class="w-full max-w-lg bg-white border border-ink/5 rounded-2xl shadow-sm" style="padding:clamp(16px,3vw,40px);">
+                        <div class="flex items-center justify-between mb-5 pb-4 border-b border-ink/5">
+                            <div>
+                                <h4 class="font-serif text-ink" style="font-size:clamp(.95rem,2.5vw,1.2rem);">Workflow Orchestration</h4>
+                                <p class="text-xs text-ink-light mt-0.5">Processing incoming request...</p>
+                            </div>
+                            <div class="w-8 h-8 rounded-full bg-cream flex items-center justify-center shrink-0">
+                                <i data-lucide="loader-2" class="w-4 h-4 text-ink-light animate-spin"></i>
+                            </div>
+                        </div>
+                        <div style="display:flex;flex-direction:column;gap:clamp(14px,3vw,28px);position:relative;">
+                            <div class="absolute w-px bg-ink/5" style="left:15px;top:10px;bottom:10px;"></div>
+                            <div class="flex items-start gap-4 log-item" id="log-1">
+                                <div class="w-8 h-8 rounded-full bg-white border border-ink/10 flex items-center justify-center shrink-0 z-10">
+                                    <div class="w-2 h-2 rounded-full log-dot transition-colors duration-500" style="background:rgba(28,25,23,.2);"></div>
+                                </div>
+                                <div class="pt-1 w-full">
+                                    <span class="text-ink font-medium text-sm">Form Data Received</span>
+                                    <p class="text-ink-light text-xs mt-1.5 leading-relaxed bg-cream p-2.5 rounded-lg border border-ink/5">Parsing: Industry <span class="font-medium text-ink">SaaS</span>, Budget <span class="font-medium text-ink">$15k+</span></p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-4 log-item" id="log-2">
+                                <div class="w-8 h-8 rounded-full bg-white border border-ink/10 flex items-center justify-center shrink-0 z-10">
+                                    <div class="w-2 h-2 rounded-full log-dot transition-colors duration-500" style="background:rgba(28,25,23,.2);"></div>
+                                </div>
+                                <div class="pt-1 w-full">
+                                    <span class="text-ink font-medium text-sm">Synthesizing Proposal</span>
+                                    <p class="text-ink-light text-xs mt-1.5 leading-relaxed bg-cream p-2.5 rounded-lg border border-ink/5">LLM drafting bespoke scope from historical case studies.</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-4 log-item" id="log-3">
+                                <div class="w-8 h-8 rounded-full bg-white border border-ink/10 flex items-center justify-center shrink-0 z-10">
+                                    <div class="w-2 h-2 rounded-full log-dot transition-colors duration-500" style="background:rgba(28,25,23,.2);"></div>
+                                </div>
+                                <div class="pt-1 w-full">
+                                    <span class="text-ink font-medium text-sm">Systems Updated</span>
+                                    <p class="text-ink-light text-xs mt-1.5 leading-relaxed">CRM → <span class="bg-cream px-2 py-0.5 rounded text-ink border border-ink/5">Qualified</span>. Slack notified.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- State 3 -->
+                <div id="state-3" class="absolute inset-0 bg-[#FAFAFA] opacity-0 pointer-events-none transition-all duration-[1200ms] ease-[cubic-bezier(0.16,1,0.3,1)]" style="transform:translateY(20px); padding:clamp(10px,3.5vw,56px);">
+                    <div class="w-full h-full flex flex-col max-w-4xl mx-auto">
+                        <div class="flex justify-between items-end pb-3 border-b border-ink/5 mb-4">
+                            <div>
+                                <h3 class="font-serif text-ink" style="font-size:clamp(1rem,3vw,1.875rem);">Performance Overview</h3>
+                                <p class="text-ink-light text-xs mt-0.5">Automated systems telemetry.</p>
+                            </div>
+                            <div class="flex items-center gap-1.5 text-[10px] font-medium text-ink/50 bg-white px-2.5 py-1 rounded-full border border-ink/5">
+                                <div class="w-1.5 h-1.5 rounded-full bg-green-500"></div> Operational
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-3 gap-2 md:gap-4 mb-3">
+                            <div class="bg-white border border-ink/5 rounded-xl shadow-sm flex flex-col" style="padding:clamp(8px,2vw,20px);">
+                                <div class="eyebrow text-ink-light mb-1" style="font-size:clamp(6px,1.4vw,10px);">Hours Saved</div>
+                                <div class="font-serif text-ink" style="font-size:clamp(1rem,3.5vw,2rem);">124<span class="text-ink-light font-sans font-normal" style="font-size:.6em;">/mo</span></div>
+                            </div>
+                            <div class="bg-white border border-ink/5 rounded-xl shadow-sm flex flex-col" style="padding:clamp(8px,2vw,20px);">
+                                <div class="eyebrow text-ink-light mb-1" style="font-size:clamp(6px,1.4vw,10px);">Leads</div>
+                                <div class="font-serif text-ink" style="font-size:clamp(1rem,3.5vw,2rem);">8,402</div>
+                            </div>
+                            <div class="bg-white border border-ink/5 rounded-xl shadow-sm flex flex-col" style="padding:clamp(8px,2vw,20px);">
+                                <div class="eyebrow text-ink-light mb-1" style="font-size:clamp(6px,1.4vw,10px);">Latency</div>
+                                <div class="font-serif text-accent" style="font-size:clamp(1rem,3.5vw,2rem);">1.2s</div>
+                            </div>
+                        </div>
+                        <div class="flex-1 bg-white border border-ink/5 rounded-xl shadow-sm flex items-end justify-between gap-1 md:gap-2 relative group min-h-0" style="padding:clamp(6px,2vw,24px);">
+                            <div class="w-full bg-cream transition-all h-[20%] rounded-t-sm group-hover:bg-cream-dark"></div>
+                            <div class="w-full bg-cream transition-all h-[35%] rounded-t-sm group-hover:bg-cream-dark"></div>
+                            <div class="w-full bg-cream transition-all h-[25%] rounded-t-sm group-hover:bg-cream-dark"></div>
+                            <div class="w-full bg-cream-dark transition-all h-[50%] rounded-t-sm"></div>
+                            <div class="w-full bg-ink transition-all h-[70%] rounded-t-sm relative">
+                                <div class="absolute left-1/2 -translate-x-1/2 bg-white border border-ink/5 shadow-sm text-ink text-[9px] py-1 px-2 rounded-full font-medium whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity" style="top:-26px;">Deployed</div>
+                            </div>
+                            <div class="w-full bg-ink/80 transition-all h-[85%] rounded-t-sm"></div>
+                            <div class="w-full bg-ink/60 transition-all h-[95%] rounded-t-sm"></div>
+                        </div>
+                        <div class="absolute z-20" style="bottom:clamp(10px,2vw,28px);right:clamp(10px,2vw,28px);">
+                            <button id="target-btn-2" class="bg-white border border-ink/10 shadow-sm hover:border-ink/20 hover:shadow-md rounded-full flex items-center justify-center text-ink transition-all" style="width:clamp(32px,4vw,44px);height:clamp(32px,4vw,44px);">
+                                <i data-lucide="rotate-ccw" style="width:13px;height:13px;"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════ SERVICES ═══════ -->
+<section id="services" class="bg-white border-t border-ink/5" style="padding:clamp(3rem,8vw,6rem) 0;">
+    <div class="max-w-7xl mx-auto" style="padding-left:clamp(1rem,4vw,1.5rem); padding-right:clamp(1rem,4vw,1.5rem);">
+        <div class="mb-10 md:mb-16 reveal">
+            <div class="eyebrow text-accent mb-3">Expertise</div>
+            <h2 class="font-serif tracking-tight text-ink mb-5" style="font-size:clamp(2.5rem,8vw,4rem);">Capabilities.</h2>
+            <div class="w-16 h-px bg-ink/20"></div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-5">
+            <div class="bento-card md:col-span-2 bg-white border border-ink/5 rounded-[1.5rem] md:rounded-[2rem] reveal" style="padding:clamp(1.5rem,4vw,3rem);">
+                <div class="w-11 h-11 rounded-full bg-cream flex items-center justify-center mb-6 border border-ink/5 shrink-0">
+                    <i data-lucide="pen-tool" class="w-5 h-5 text-ink"></i>
+                </div>
+                <h3 class="font-serif text-ink mb-3" style="font-size:clamp(1.1rem,2.5vw,1.5rem);">Immersive Architecture</h3>
+                <p class="text-ink-light leading-relaxed font-light text-sm max-w-xl">We eschew templates in favor of bespoke, ground-up development. Every pixel is intentional. Every interaction designed to evoke trust, authority, and seamless usability.</p>
+            </div>
+            <div class="bento-card bg-white border border-ink/5 rounded-[1.5rem] md:rounded-[2rem] reveal" style="padding:clamp(1.5rem,4vw,3rem); transition-delay:80ms;">
+                <div class="w-11 h-11 rounded-full bg-cream flex items-center justify-center mb-6 border border-ink/5 shrink-0">
+                    <i data-lucide="cpu" class="w-5 h-5 text-ink"></i>
+                </div>
+                <h3 class="font-serif text-ink mb-3" style="font-size:clamp(1rem,2vw,1.25rem);">Autonomous Agents</h3>
+                <p class="text-ink-light font-light leading-relaxed text-sm">Tailored LLM integrations that handle customer inquiries and internal logic securely and without human intervention.</p>
+            </div>
+            <div class="bento-card bg-white border border-ink/5 rounded-[1.5rem] md:rounded-[2rem] reveal" style="padding:clamp(1.5rem,4vw,3rem);">
+                <div class="w-11 h-11 rounded-full bg-cream flex items-center justify-center mb-6 border border-ink/5 shrink-0">
+                    <i data-lucide="git-merge" class="w-5 h-5 text-ink"></i>
+                </div>
+                <h3 class="font-serif text-ink mb-3" style="font-size:clamp(1rem,2vw,1.25rem);">API Ecosystems</h3>
+                <p class="text-ink-light font-light leading-relaxed text-sm">Unifying fragmented toolsets — weaving CRM, communication channels, and databases into one cohesive organism.</p>
+            </div>
+            <div class="bento-card md:col-span-2 bg-white border border-ink/5 rounded-[1.5rem] md:rounded-[2rem] reveal flex flex-col sm:flex-row gap-7 items-start sm:items-center" style="padding:clamp(1.5rem,4vw,3rem); transition-delay:80ms;">
+                <div class="flex-1">
+                    <div class="w-11 h-11 rounded-full bg-cream flex items-center justify-center mb-6 border border-ink/5 shrink-0">
+                        <i data-lucide="zap" class="w-5 h-5 text-ink"></i>
+                    </div>
+                    <h3 class="font-serif text-ink mb-3" style="font-size:clamp(1.1rem,2.5vw,1.5rem);">Ruthless Optimization</h3>
+                    <p class="text-ink-light font-light leading-relaxed text-sm max-w-md">Speed is a design feature. We engineer for sub-second load times and flawless technical SEO — as performant as it is beautiful.</p>
+                </div>
+                <div class="w-32 h-32 sm:w-40 sm:h-40 bg-cream rounded-full border border-ink/5 flex items-center justify-center flex-col shrink-0 self-center">
+                    <div class="font-serif text-ink" style="font-size:clamp(1.75rem,4vw,2.5rem);">100</div>
+                    <div class="eyebrow text-ink/40 mt-1.5">Score</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════ FOOTER CTA ═══════ -->
+<section class="relative bg-ink text-cream selection:bg-cream selection:text-ink overflow-hidden" style="padding:clamp(4rem,12vw,10rem) 0;">
+    <div class="absolute inset-0 opacity-[0.02]" style="background-image:radial-gradient(circle at 2px 2px,white 1px,transparent 0);background-size:32px 32px;"></div>
+    <div class="max-w-4xl mx-auto text-center relative z-10 reveal" style="padding:0 clamp(1rem,4vw,1.5rem);">
+        <h2 class="font-serif tracking-tight text-white mb-5" style="font-size:clamp(2.5rem,10vw,5rem);">Scale gracefully.</h2>
+        <p class="text-cream/70 mb-9 max-w-2xl mx-auto font-light leading-relaxed" style="font-size:clamp(.9rem,2.5vw,1.2rem);">Let us build a digital presence that reflects your brand's true value, while automating the operational friction behind the scenes.</p>
+        <button class="bg-white text-ink rounded-full font-medium hover:bg-cream-dark transition-colors inline-flex items-center gap-3 group" style="padding:clamp(12px,2.5vw,20px) clamp(24px,5vw,40px); font-size:clamp(13px,2vw,17px);">
+            Start your project
+            <i data-lucide="arrow-right" class="w-4 h-4 md:w-5 md:h-5 group-hover:translate-x-1 transition-transform"></i>
+        </button>
+    </div>
+</section>
+
+<!-- ═══════ FOOTER ═══════ -->
+<footer class="bg-ink border-t border-white/5 text-cream" style="padding:clamp(2rem,5vw,4rem) 0;">
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-5 text-center md:text-left" style="padding-left:clamp(1rem,4vw,1.5rem); padding-right:clamp(1rem,4vw,1.5rem);">
+        <div class="flex items-center gap-2.5 font-serif text-white" style="font-size:clamp(1rem,2.5vw,1.25rem);">
+            <div class="w-7 h-7 rounded-full border border-white/20 flex items-center justify-center">
+                <i data-lucide="infinity" class="w-3.5 h-3.5 text-white"></i>
+            </div>
+            Synflow
+        </div>
+        <div class="text-cream/50 text-xs font-light">&copy; 2026 Synflow Studio. All rights reserved.</div>
+        <div class="flex gap-6">
+            <a href="#" class="text-cream/50 hover:text-white transition-colors"><span class="eyebrow">Twitter</span></a>
+            <a href="#" class="text-cream/50 hover:text-white transition-colors"><span class="eyebrow">LinkedIn</span></a>
+            <a href="#" class="text-cream/50 hover:text-white transition-colors"><span class="eyebrow">Dribbble</span></a>
+        </div>
+    </div>
+</footer>
+
+<script>
+    lucide.createIcons();
+    const lenis = new Lenis({ autoRaf:true, smoothWheel:true, syncTouch:true, lerp:.08 });
+    lenis.stop();
+
+    // Preloader
+    document.addEventListener('DOMContentLoaded', () => {
+        const cnt = document.getElementById('loader-counter');
+        const bar = document.getElementById('loader-progress');
+        const pre = document.getElementById('preloader');
+        const bod = document.getElementById('body-container');
         lucide.createIcons();
+        let s=0, T=60;
+        const iv = setInterval(()=>{
+            s++;
+            const n = Math.min(Math.floor((1-Math.pow(1-s/T,3))*100),100);
+            cnt.innerText = n.toString().padStart(2,'0');
+            bar.style.width = n+'%';
+            if(s>=T){
+                clearInterval(iv);
+                setTimeout(()=>{
+                    pre.classList.add('-translate-y-full');
+                    bod.classList.remove('overflow-hidden');
+                    lenis.resize(); lenis.start();
+                    setTimeout(()=>pre.style.display='none',1200);
+                },400);
+            }
+        },30);
+    });
 
-        // --- Lenis Smooth Scroll ---
-        const lenis = new Lenis({ autoRaf: true, smoothWheel: true, syncTouch: true, lerp: 0.08 });
-        lenis.stop();
+    // Scroll reveal
+    const ro = new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('active'); }),{ threshold:.07 });
+    document.querySelectorAll('.reveal').forEach(el=>ro.observe(el));
 
-        // --- Preloader ---
-        document.addEventListener("DOMContentLoaded", () => {
-            const counter  = document.getElementById('loader-counter');
-            const progress = document.getElementById('loader-progress');
-            const preloader = document.getElementById('preloader');
-            const bodyContainer = document.getElementById('body-container');
-            lucide.createIcons();
+    // Hamburger
+    const hbg = document.getElementById('hamburger');
+    const mmenu = document.getElementById('mobile-menu');
+    const hams = hbg ? hbg.querySelectorAll('.ham') : [];
+    let mopen=false;
+    if(hbg){
+        hbg.addEventListener('click',()=>{
+            mopen=!mopen;
+            mmenu.classList.toggle('open',mopen); mmenu.classList.toggle('closed',!mopen);
+            if(mopen){ if(hams[0])hams[0].style.transform='translateY(6px) rotate(45deg)'; if(hams[1])hams[1].style.opacity='0'; if(hams[2]){hams[2].style.transform='translateY(-6px) rotate(-45deg)'; hams[2].style.width='20px';} }
+            else { hams.forEach(h=>{h.style.transform='';h.style.opacity='';h.style.width='';});}
+        });
+        mmenu.querySelectorAll('.mob-link').forEach(l=>l.addEventListener('click',()=>{
+            mopen=false; mmenu.classList.remove('open'); mmenu.classList.add('closed');
+            hams.forEach(h=>{h.style.transform='';h.style.opacity='';h.style.width='';});
+        }));
+    }
 
-            let currentStep = 0;
-            const duration = 1800, intervalTime = 30;
-            const totalSteps = duration / intervalTime;
+    // Carousel dots
+    const track = document.querySelector('.works-track');
+    const dotEls = document.querySelectorAll('#carousel-dots .dot');
+    if(track && dotEls.length){
+        track.addEventListener('scroll',()=>{
+            const cardW = track.children[0] ? track.children[0].offsetWidth + 20 : 1;
+            const idx = Math.min(Math.round(track.scrollLeft / cardW), dotEls.length-1);
+            dotEls.forEach((d,i)=>d.classList.toggle('active',i===idx));
+        },{passive:true});
+    }
 
-            const interval = setInterval(() => {
-                currentStep++;
-                const x = currentStep / totalSteps;
-                const eased = 1 - Math.pow(1 - x, 3);
-                let count = Math.min(Math.floor(eased * 100), 100);
-                counter.innerText = count.toString().padStart(2, '0');
-                progress.style.width = count + '%';
+    // Platform animation
+    const sc  = document.getElementById('sim-cursor');
+    const rip = document.getElementById('cursor-ripple');
+    const s1  = document.getElementById('state-1');
+    const s2  = document.getElementById('state-2');
+    const s3  = document.getElementById('state-3');
+    const b1  = document.getElementById('target-btn-1');
+    const b2  = document.getElementById('target-btn-2');
+    const l1  = document.getElementById('log-1');
+    const l2  = document.getElementById('log-2');
+    const l3  = document.getElementById('log-3');
+    const lds = document.querySelectorAll('.log-dot');
+    let anim=false;
 
-                if (currentStep >= totalSteps) {
-                    clearInterval(interval);
-                    counter.innerText = '100';
-                    progress.style.width = '100%';
-                    setTimeout(() => {
-                        preloader.classList.add('-translate-y-full');
-                        bodyContainer.classList.remove('overflow-hidden');
-                        lenis.resize();
-                        lenis.start();
-                        setTimeout(() => { preloader.style.display = 'none'; }, 1200);
-                    }, 400);
+    function cr(el){ if(!el||!document.getElementById('preview-container'))return{x:0,y:0}; const r=el.getBoundingClientRect(),c=document.getElementById('preview-container').getBoundingClientRect(); return{x:r.left-c.left+r.width/2,y:r.top-c.top+r.height/2}; }
+    function mv(x,y){ if(sc) sc.style.transform=`translate(${x}px,${y}px)`; }
+    function doRip(){ if(!rip)return; rip.classList.remove('click-ripple'); void rip.offsetWidth; rip.classList.add('click-ripple'); }
+    function ss(a,b,c){ [[s1,a],[s2,b],[s3,c]].forEach(([el,show])=>{ if(!el)return; el.style.opacity=show?'1':'0'; el.style.transform=show?'translateY(0)':'translateY(20px)'; el.style.pointerEvents=show?'auto':'none'; }); }
+    const w=ms=>new Promise(r=>setTimeout(r,ms));
+
+    async function seq(){
+        if(anim)return; anim=true;
+        ss(true,false,false);
+        [l1,l2,l3].forEach(l=>l&&l.classList.remove('active'));
+        lds.forEach(d=>{ if(d) d.style.background='rgba(28,25,23,.2)'; });
+        mv(300,180); await w(900);
+        if(b1){ const c=cr(b1); mv(c.x,c.y); await w(700); doRip(); b1.style.background='#44403C'; setTimeout(()=>b1.style.background='',150); }
+        await w(400); ss(false,true,false); mv(400,320);
+        await w(550);  if(l1){l1.classList.add('active'); if(lds[0])lds[0].style.background='#3A5A40';}
+        await w(750);  if(l2){l2.classList.add('active'); if(lds[1])lds[1].style.background='#3A5A40';}
+        await w(950);  if(l3){l3.classList.add('active'); if(lds[2])lds[2].style.background='#3A5A40';}
+        await w(1000); ss(false,false,true);
+        await w(1400);
+        if(b2){ const c=cr(b2); mv(c.x,c.y); await w(700); doRip(); }
+        await w(400); anim=false; seq();
+    }
+
+    const pc=document.getElementById('preview-container');
+    if(pc){ new IntersectionObserver(es=>{ if(es[0].isIntersecting&&!anim) setTimeout(seq,500); },{threshold:.4}).observe(pc); }
+
+    // ── Desktop iframe initialisation ──
+    // Only inject src on ≥768px so mobile never requests the pages
+    function initDesktopIframes() {
+        if (window.innerWidth < 768) return;
+
+        document.querySelectorAll('.card-iframe-wrap').forEach(wrap => {
+            const iframe = wrap.querySelector('iframe[data-src]');
+            if (!iframe || iframe.src) return; // already loaded
+
+            // Calculate scale: fit a 1280px-wide page into the card
+            const cardViewport = wrap.closest('.card-viewport');
+            const scale = (cardViewport ? cardViewport.offsetWidth : 500) / 1280;
+            iframe.style.setProperty('--iframe-scale', scale);
+            iframe.style.transform = `scale(${scale})`;
+            wrap.style.setProperty('--iframe-scale', scale);
+
+            // Lazy-load on intersection
+            const observer = new IntersectionObserver(entries => {
+                if (entries[0].isIntersecting) {
+                    iframe.src = iframe.dataset.src;
+                    observer.disconnect();
                 }
-            }, intervalTime);
+            }, { threshold: 0.1 });
+            observer.observe(wrap);
         });
 
-        // --- Scroll Reveal ---
-        const revealObserver = new IntersectionObserver((entries) => {
-            entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('active'); });
-        }, { threshold: 0.08 });
-        document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
-
-        // --- Mobile Nav Hamburger ---
-        const hamburger = document.getElementById('hamburger');
-        const mobileMenu = document.getElementById('mobile-menu');
-        const hamLines   = hamburger ? hamburger.querySelectorAll('.ham-line') : [];
-        let menuOpen = false;
-
-        if (hamburger && mobileMenu) {
-            hamburger.addEventListener('click', () => {
-                menuOpen = !menuOpen;
-                if (menuOpen) {
-                    mobileMenu.classList.remove('hidden-menu');
-                    mobileMenu.classList.add('open-menu');
-                    if (hamLines[0]) hamLines[0].style.transform = 'translateY(6px) rotate(45deg)';
-                    if (hamLines[1]) hamLines[1].style.opacity   = '0';
-                    if (hamLines[2]) { hamLines[2].style.transform = 'translateY(-6px) rotate(-45deg)'; hamLines[2].style.width = '20px'; }
-                } else {
-                    mobileMenu.classList.remove('open-menu');
-                    mobileMenu.classList.add('hidden-menu');
-                    hamLines.forEach(l => { l.style.transform = ''; l.style.opacity = ''; l.style.width = ''; });
-                }
+        // Recalc scale if window resizes
+        window.addEventListener('resize', () => {
+            document.querySelectorAll('.card-iframe-wrap').forEach(wrap => {
+                const iframe = wrap.querySelector('iframe');
+                const cardViewport = wrap.closest('.card-viewport');
+                if (!iframe || !cardViewport) return;
+                const scale = cardViewport.offsetWidth / 1280;
+                iframe.style.setProperty('--iframe-scale', scale);
+                iframe.style.transform = `scale(${scale})`;
+                wrap.style.setProperty('--iframe-scale', scale);
             });
-            // Close on link click
-            mobileMenu.querySelectorAll('.mobile-nav-link').forEach(link => {
-                link.addEventListener('click', () => {
-                    menuOpen = false;
-                    mobileMenu.classList.remove('open-menu');
-                    mobileMenu.classList.add('hidden-menu');
-                    hamLines.forEach(l => { l.style.transform = ''; l.style.opacity = ''; l.style.width = ''; });
-                });
-            });
-        }
+        }, { passive: true });
+    }
+    initDesktopIframes();
 
-        // --- Interactive Browser Terminal ---
-        const simCursor  = document.getElementById('sim-cursor');
-        const ripple     = document.getElementById('cursor-ripple');
-        const state1     = document.getElementById('state-1');
-        const state2     = document.getElementById('state-2');
-        const state3     = document.getElementById('state-3');
-        const targetBtn1 = document.getElementById('target-btn-1');
-        const targetBtn2 = document.getElementById('target-btn-2');
-        const log1 = document.getElementById('log-1');
-        const log2 = document.getElementById('log-2');
-        const log3 = document.getElementById('log-3');
-        const logDots = document.querySelectorAll('.log-dot');
-        let isAnimating = false;
-
-        function getCenterCoords(element) {
-            if (!element) return { x: 0, y: 0 };
-            const rect = element.getBoundingClientRect();
-            const container = document.getElementById('preview-container');
-            if (!container) return { x: 0, y: 0 };
-            const cRect = container.getBoundingClientRect();
-            return { x: (rect.left - cRect.left) + rect.width / 2, y: (rect.top - cRect.top) + rect.height / 2 };
-        }
-
-        function moveCursorTo(x, y) { if (simCursor) simCursor.style.transform = `translate(${x}px, ${y}px)`; }
-        function simulateClick() {
-            if (!ripple) return;
-            ripple.classList.remove('click-ripple');
-            void ripple.offsetWidth;
-            ripple.classList.add('click-ripple');
-        }
-
-        async function runSequence() {
-            if (isAnimating) return;
-            isAnimating = true;
-            if (state1) { state1.style.opacity='1'; state1.style.transform='translateY(0) scale(1)'; state1.style.pointerEvents='auto'; }
-            if (state2) { state2.style.opacity='0'; state2.style.transform='translateY(20px) scale(1.02)'; state2.style.pointerEvents='none'; }
-            if (state3) { state3.style.opacity='0'; state3.style.transform='translateY(20px) scale(1.02)'; state3.style.pointerEvents='none'; }
-            if (log1) log1.classList.remove('active');
-            if (log2) log2.classList.remove('active');
-            if (log3) log3.classList.remove('active');
-            logDots.forEach(d => { d.classList.remove('bg-[#3A5A40]'); d.classList.add('bg-ink/20'); });
-
-            moveCursorTo(400, 300);
-            await new Promise(r => setTimeout(r, 1000));
-
-            if (targetBtn1) {
-                const c = getCenterCoords(targetBtn1);
-                moveCursorTo(c.x, c.y);
-                await new Promise(r => setTimeout(r, 800));
-                simulateClick();
-                targetBtn1.classList.add('bg-ink-light');
-                setTimeout(() => targetBtn1.classList.remove('bg-ink-light'), 150);
-            }
-            await new Promise(r => setTimeout(r, 400));
-
-            if (state1) { state1.style.opacity='0'; state1.style.transform='translateY(-20px) scale(0.98)'; state1.style.pointerEvents='none'; }
-            if (state2) { state2.style.opacity='1'; state2.style.transform='translateY(0) scale(1)'; }
-            moveCursorTo(500, 400);
-
-            await new Promise(r => setTimeout(r, 600));
-            if (log1) log1.classList.add('active');
-            if (logDots[0]) { logDots[0].classList.remove('bg-ink/20'); logDots[0].classList.add('bg-[#3A5A40]'); }
-
-            await new Promise(r => setTimeout(r, 800));
-            if (log2) log2.classList.add('active');
-            if (logDots[1]) { logDots[1].classList.remove('bg-ink/20'); logDots[1].classList.add('bg-[#3A5A40]'); }
-
-            await new Promise(r => setTimeout(r, 1000));
-            if (log3) log3.classList.add('active');
-            if (logDots[2]) { logDots[2].classList.remove('bg-ink/20'); logDots[2].classList.add('bg-[#3A5A40]'); }
-
-            await new Promise(r => setTimeout(r, 1200));
-            if (state2) { state2.style.opacity='0'; state2.style.transform='translateY(-20px) scale(0.98)'; }
-            if (state3) { state3.style.opacity='1'; state3.style.transform='translateY(0) scale(1)'; state3.style.pointerEvents='auto'; }
-
-            await new Promise(r => setTimeout(r, 1500));
-            if (targetBtn2) {
-                const c = getCenterCoords(targetBtn2);
-                moveCursorTo(c.x, c.y);
-                await new Promise(r => setTimeout(r, 800));
-                simulateClick();
-            }
-            await new Promise(r => setTimeout(r, 400));
-            isAnimating = false;
-            runSequence();
-        }
-
-        const previewContainer = document.getElementById('preview-container');
-        if (previewContainer) {
-            new IntersectionObserver((entries) => {
-                if (entries[0].isIntersecting && !isAnimating) setTimeout(runSequence, 500);
-            }, { threshold: 0.4 }).observe(previewContainer);
-        }
-
-        // --- Roaming Cursors (work cards) ---
-        document.querySelectorAll('.sim-cursor-work').forEach(cur => {
-            const container = cur.parentElement;
+    // ── Roaming cursors on desktop iframe cards ──
+    function initRoamingCursors() {
+        if (window.innerWidth < 768) return;
+        document.querySelectorAll('.card-iframe-wrap .sim-cursor-work').forEach(cur => {
+            const container = cur.closest('.card-iframe-wrap');
             if (!container) return;
-            const sx = Math.random() * (container.clientWidth * 0.6) + container.clientWidth * 0.2;
-            const sy = Math.random() * (container.clientHeight * 0.6) + container.clientHeight * 0.2;
-            cur.style.transform = `translate(${sx}px, ${sy}px)`;
-            setTimeout(() => cur.classList.remove('opacity-0'), 500);
+            const W = container.offsetWidth;
+            const H = container.offsetHeight;
+            cur.style.transform = `translate(${W*0.5}px,${H*0.5}px)`;
+            setTimeout(() => { cur.style.opacity = '1'; }, 600);
             function roam() {
-                const x = Math.random() * (container.clientWidth * 0.7) + container.clientWidth * 0.15;
-                const y = Math.random() * (container.clientHeight * 0.7) + container.clientHeight * 0.15;
-                const d = Math.random() * 2500 + 2000;
-                cur.style.transition = `transform ${d}ms cubic-bezier(0.25, 1, 0.5, 1)`;
-                cur.style.transform = `translate(${x}px, ${y}px)`;
+                const x = Math.random() * W * 0.72 + W * 0.12;
+                const y = Math.random() * H * 0.72 + H * 0.12;
+                const d = Math.random() * 2400 + 1800;
+                cur.style.transition = `transform ${d}ms cubic-bezier(0.25,1,0.5,1), opacity .7s ease`;
+                cur.style.transform = `translate(${x}px,${y}px)`;
                 setTimeout(roam, d);
             }
-            setTimeout(roam, Math.random() * 1000 + 500);
+            setTimeout(roam, Math.random() * 800 + 400);
         });
+    }
+    initRoamingCursors();
 
-        // --- Custom Smooth Cursor (only on pointer:fine devices) ---
-        const customCursor = document.getElementById('custom-cursor');
-        const graphic = document.getElementById('cursor-graphic');
-        const isPointerFine = window.matchMedia('(pointer: fine)').matches;
-
-        if (isPointerFine && customCursor) {
-            customCursor.classList.remove('hidden');
-            customCursor.classList.add('block');
-
-            let mouseX = window.innerWidth / 2, mouseY = window.innerHeight / 2;
-            let cursorX = mouseX, cursorY = mouseY;
-            let cursorScale = 1, cursorRotate = 0;
-
-            document.addEventListener('mousemove', (e) => {
-                mouseX = e.clientX; mouseY = e.clientY;
-                const cursorPath = customCursor.querySelector('.cursor-path');
-                if (e.target.closest('a') || e.target.closest('button') || e.target.closest('.group') || e.target.closest('.cursor-pointer')) {
-                    cursorScale = 1.15; cursorRotate = -3;
-                    if (cursorPath) cursorPath.setAttribute('fill', '#C25E3E');
-                } else {
-                    cursorScale = 1; cursorRotate = 0;
-                    if (cursorPath) cursorPath.setAttribute('fill', '#000000');
-                }
-            });
-
-            function animateCursor() {
-                cursorX += (mouseX - cursorX) * 0.4;
-                cursorY += (mouseY - cursorY) * 0.4;
-                customCursor.style.transform = `translate3d(${cursorX}px, ${cursorY}px, 0)`;
-                if (graphic) graphic.style.transform = `scale(${cursorScale}) rotate(${cursorRotate}deg)`;
-                requestAnimationFrame(animateCursor);
-            }
-            animateCursor();
-
-            document.addEventListener('mouseleave', () => { customCursor.style.opacity = '0'; });
-            document.addEventListener('mouseenter', () => { customCursor.style.opacity = '1'; });
-        }
-    </script>
+    // Custom cursor
+    const cc=document.getElementById('custom-cursor');
+    const cg=document.getElementById('cursor-graphic');
+    if(window.matchMedia('(pointer:fine)').matches && cc){
+        cc.classList.remove('hidden'); cc.classList.add('block');
+        let mx=innerWidth/2,my=innerHeight/2,cx=mx,cy=my,csc=1,crt=0;
+        document.addEventListener('mousemove',e=>{
+            mx=e.clientX; my=e.clientY;
+            const p=cc.querySelector('.cursor-path');
+            const ov=e.target.closest('a,button,.group,.work-card');
+            csc=ov?1.15:1; crt=ov?-3:0;
+            if(p) p.setAttribute('fill',ov?'#C25E3E':'#000000');
+        });
+        (function loop(){ cx+=(mx-cx)*.4; cy+=(my-cy)*.4; cc.style.transform=`translate3d(${cx}px,${cy}px,0)`; if(cg)cg.style.transform=`scale(${csc}) rotate(${crt}deg)`; requestAnimationFrame(loop); })();
+        document.addEventListener('mouseleave',()=>cc.style.opacity='0');
+        document.addEventListener('mouseenter',()=>cc.style.opacity='1');
+    }
+</script>
 </body>
 </html>
